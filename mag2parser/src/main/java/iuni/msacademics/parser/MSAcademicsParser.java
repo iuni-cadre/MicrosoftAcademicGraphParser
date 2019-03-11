@@ -161,7 +161,7 @@ public class MSAcademicsParser {
         PrintWriter paperPaperCitationContextsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperPaperCitationContextsCSVName, true));
         PrintWriter paperFOSCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperIdFOSCSVName, true));
         PrintWriter paperLanguagesCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperPaperLanguagesCSVName, true));
-		PrintWriter paperRecommendationsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperRecommendationsCSVName, true));
+	PrintWriter paperRecommendationsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperRecommendationsCSVName, true));
         PrintWriter languageCSV = new PrintWriter(new FileWriter(targetDir + File.separator + languageCSVName, true));
         PrintWriter urlCSV = new PrintWriter(new FileWriter(targetDir + File.separator + urlCSVName, true));
         PrintWriter affiliatePaperCSV = new PrintWriter(new FileWriter(targetDir + File.separator + affiliatePaperCSVName, true));
@@ -272,11 +272,11 @@ public class MSAcademicsParser {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 5) {
             String intituteContent = "\""  + splits[0] + "\""  + "~" +
-                            		 "\""  + splits[1] + "\""  + "~" +
-                            		 "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                            		 "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            		 "\""  + splits[4] + "\""  + "~" +
-                            		 "\""  + splits[5] + "\""  + "~institution";
+                            	     "\""  + splits[1] + "\""  + "~" +
+                                     "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                            	     "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
+                            	     "\""  + splits[4] + "\""  + "~" +
+                            	     "\""  + splits[5] + "\""  + "~institution";
             outputFile.println(intituteContent);
           }
         }
@@ -320,19 +320,19 @@ public class MSAcademicsParser {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 13) {
             String confInstanceContent = "\""  + splits[0] + "\""  + "~" +
-                            			 "\""  + splits[1] + "\""  + "~" +
-                            			 "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                            			 "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            			 "\""  + removeSpecialCharacters(splits[4]) + "\""  + "~" +
-                            			 "\""  + removeSpecialCharacters(splits[5]) + "\""  + "~" +
-                            			 "\"" + splits[6] + "\"" + "~" +
-                            			 "\"" + splits[7] + "\"" + "~"+
-                            			 "\"" + splits[8] + "\"" + "~" +
-                            			 "\"" + splits[9] + "\"" + "~" +
-                            			 "\"" + splits[10] + "\"" + "~" +
-                            			 "\"" + splits[11] + "\"" + "~" +
-                            			 "\"" + splits[12] + "\"" + "~" +
-                            			 "\"" + splits[13] + "\"" + "~conference_instance" ;
+                            		 "\""  + splits[1] + "\""  + "~" +
+                            	         "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                            		 "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
+                            	         "\""  + removeSpecialCharacters(splits[4]) + "\""  + "~" +
+                            		 "\""  + removeSpecialCharacters(splits[5]) + "\""  + "~" +
+                            	         "\"" + splits[6] + "\"" + "~" +
+                            	         "\"" + splits[7] + "\"" + "~"+
+                            	         "\"" + splits[8] + "\"" + "~" +
+                            	         "\"" + splits[9] + "\"" + "~" +
+                            	         "\"" + splits[10] + "\"" + "~" +
+                            	         "\"" + splits[11] + "\"" + "~" +
+                            	         "\"" + splits[12] + "\"" + "~" +
+                            	         "\"" + splits[13] + "\"" + "~conference_instance" ;
             outputFile.println(confInstanceContent);
           }
         }
@@ -351,11 +351,11 @@ public class MSAcademicsParser {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 5) {
             String confSeriesContent = "\"" + splits[0] + "\"" +  "~" +
-                              		   "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
-                              		   "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                              		   "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                              		   "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
-                              		   "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~conference_series";
+                              	       "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
+                              	       "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                              	       "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
+                              	       "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
+                              	       "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~conference_series";
             outputFile.println(confSeriesContent);
           }
         }
@@ -377,7 +377,7 @@ public class MSAcademicsParser {
             String fos2 = splits[1];
             if (fos1 != null && !fos1.equals("") && fos2 != null && !fos2.equals("")) {
               String paperFOSContent = "\"" + fos1 + "\"" + "~" +
-                                	   "\"" + fos2 + "\"" + "~SUB_FIELD_OF";
+                                       "\"" + fos2 + "\"" + "~SUB_FIELD_OF";
               outputFile.println(paperFOSContent);
             }
           }
@@ -421,11 +421,11 @@ public class MSAcademicsParser {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 5) {
             String abstractIndexContent = "\""  + splits[0] + "\""  + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~journal";
+                            	          "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
+                            		  "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
+                            	          "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
+                            	          "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~journal";
             outputFile.println(abstractIndexContent);
           }
         }
@@ -449,7 +449,7 @@ public class MSAcademicsParser {
             }
             long abstractId = uniqueCurrentTimeMS();
             String abstractIndexContent = "\""  + abstractId + "\""  + "~" +
-                              			  "\"" + removeSpecialCharacters(abstractString) + "\"" + "~abstract_index";
+                              		  "\"" + removeSpecialCharacters(abstractString) + "\"" + "~abstract_index";
             abstractIndexFile.println(abstractIndexContent);
             String paperId = splits[0];
             if (paperId != null && !paperId.equals("")) {
