@@ -18,29 +18,24 @@ public class MSAcademicsParser {
     private static final Logger logger = LoggerFactory.getLogger(MSAcademicsParser.class);
     private String sourceDir = null;
     private String targetDir = null;
-    private String institutionCSVName = null;
-    private String confInstanceCSVName = null;
+    private String affiliationsCSVName = null;
     private String authorsCSVName = null;
-    private String abstractIndexCSVName = null;
-    private String languageCSVName = null;
-    private String urlCSVName = null;
-    private String confSeriesCSVName = null;
-    private String fieldOfStudyCSVName = null;
-    private String journalCSVName = null;
-    private String authorAffCSVName = null;
-    private String affiliatePaperCSVName = null;
-    private String paperJournalCSVName = null;
-    private String authorPaperCSVName = null;
-    private String paperPaperCitationContextsCSVName = null;
-    private String paperConfIdCSVName = null;
-    private String confIdConfSeriesIdCSVName = null;
-    private String paperIdFOSCSVName = null;
-    private String paperPaperAbstractCSVName = null;
-    private String paperPaperLanguagesCSVName = null;
-    private String paperPaperURLsForCSVName = null;
-    private String fosFosCSVName = null;
-    private String papersCSVName = null;
+    private String conferenceInstancesCSVName = null;
+    private String conferenceSeriesCSVName = null;
+    private String fieldsOfStudyChildrenCSVName = null;
+    private String fieldsOfStudyCSVName = null;
+    private String journalsCSVName = null;
+    private String paperAbstractInvertedIndexCSVName = null;
+    private String paperAuthorAffiliationsCSVName = null;
+    private String paperCitationContextsCSVName = null;
+    private String paperFieldsOfStudyCSVName = null;
+    private String paperLanguagesCSVName = null;
     private String paperRecommendationsCSVName = null;
+    private String paperReferencesCSVName = null;
+    private String paperResourcesCSVName = null;
+    private String paperURLsCSVName = null;
+    private String papersCSVName = null;
+    private String relatedFieldOfStudyCSVName = null;
     private static final AtomicLong counter = new AtomicLong(0);
     private Map<String, Long> languageIdMap = new HashMap<>();
     private static final AtomicLong LAST_TIME_MS = new AtomicLong();
@@ -105,28 +100,24 @@ public class MSAcademicsParser {
               System.out.println("Please provide csvPrefix option");
               System.exit(0);
             } else {
-              institutionCSVName = csvPrefix + "_institution.csv";
-              confInstanceCSVName = csvPrefix + "_confInstance.csv";
-              authorsCSVName = csvPrefix + "_author.csv";
-              abstractIndexCSVName = csvPrefix + "_abstractIndex.csv";
-              languageCSVName = csvPrefix + "_language.csv";
-              urlCSVName = csvPrefix + "_url.csv";
-              papersCSVName = csvPrefix + "_paper.csv";
-              confSeriesCSVName = csvPrefix + "_confSeries.csv";
-              journalCSVName = csvPrefix + "_journal.csv";
-              fieldOfStudyCSVName = csvPrefix + "_fos.csv";
-              authorAffCSVName = csvPrefix + "_autAff.csv";
-              affiliatePaperCSVName = csvPrefix + "_affPaper.csv";
-              paperJournalCSVName = csvPrefix + "_paperJournal.csv";
-              authorPaperCSVName = csvPrefix + "_authorPaper.csv";
-              paperPaperCitationContextsCSVName = csvPrefix + "_paperPaperCitationContexts.csv";
-              paperConfIdCSVName = csvPrefix + "_paperConfId.csv";
-              confIdConfSeriesIdCSVName = csvPrefix + "_confIdConfSeriesId.csv";
-              paperIdFOSCSVName = csvPrefix + "_paperFOS.csv";
-              paperPaperAbstractCSVName = csvPrefix + "_paperPaperAbstract.csv";
-              paperPaperLanguagesCSVName = csvPrefix + "_paperPaperLang.csv";
-              paperPaperURLsForCSVName = csvPrefix + "_paperPaperURL.csv";
-              fosFosCSVName = csvPrefix + "_fosFos.csv";
+              affiliationsCSVName = csvPrefix + "_affiliations.csv";
+              authorsCSVName = csvPrefix + "_authors.csv";
+              conferenceInstancesCSVName = csvPrefix + "_conferenceInstances.csv";
+              conferenceSeriesCSVName = csvPrefix + "_conferenceSeries.csv";
+              fieldsOfStudyChildrenCSVName = csvPrefix + "_fieldsOfStudyChildren.csv";
+              fieldsOfStudyCSVName = csvPrefix + "_fieldsOfStudy.csv";
+              journalsCSVName = csvPrefix + "_journals.csv";
+              paperAbstractInvertedIndexCSVName = csvPrefix + "_paperAbstractInvertedIndex.csv";
+              paperAuthorAffiliationsCSVName = csvPrefix + "_paperAuthorAffiliations.csv";
+              paperCitationContextsCSVName = csvPrefix + "_paperCitationContexts.csv";
+              paperFieldsOfStudyCSVName = csvPrefix + "_paperFieldsOfStudy.csv";
+              paperLanguagesCSVName = csvPrefix + "_paperLanguages.csv";
+              paperRecommendationsCSVName = csvPrefix + "_paperRecommendations.csv";
+              paperReferencesCSVName = csvPrefix + "_paperReferences.csv";
+              paperResourcesCSVName = csvPrefix + "_paperResources.csv";
+              paperURLsCSVName = csvPrefix + "_paperURLs.csv";    
+              papersCSVName = csvPrefix + "_papers.csv";
+              relatedFieldOfStudyCSVName = csvPrefix + "_relatedFieldOfStudy.csv";
             }
           }
         }
@@ -146,111 +137,103 @@ public class MSAcademicsParser {
         if (fileSource.exists() && fileSource.isDirectory()) {
           sourceFiles = fileSource.listFiles();
         }
-
-        PrintWriter institutionCSV = new PrintWriter(new FileWriter(targetDir + File.separator + institutionCSVName, true));
+       
+        PrintWriter affiliationsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + affiliationsCSVName, true));
         PrintWriter authorsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + authorsCSVName, true));
-        PrintWriter confInstanceCSV = new PrintWriter(new FileWriter(targetDir + File.separator + confInstanceCSVName, true));
-        PrintWriter confIdConfSeriesIdCSV = new PrintWriter(new FileWriter(targetDir + File.separator + confIdConfSeriesIdCSVName, true));
-        PrintWriter confSeriesCSV = new PrintWriter(new FileWriter(targetDir + File.separator + confSeriesCSVName, true));
-        PrintWriter fosFOSCSV = new PrintWriter(new FileWriter(targetDir + File.separator + fosFosCSVName, true));
-        PrintWriter fosCSV = new PrintWriter(new FileWriter(targetDir + File.separator + fieldOfStudyCSVName, true));
-        PrintWriter journalCSV = new PrintWriter(new FileWriter(targetDir + File.separator + journalCSVName, true));
-        PrintWriter abstractIndexCSV = new PrintWriter(new FileWriter(targetDir + File.separator + abstractIndexCSVName, true));
-        PrintWriter authorAffCSV = new PrintWriter(new FileWriter(targetDir + File.separator + authorAffCSVName, true));
-        PrintWriter paperPaperAbstractCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperPaperAbstractCSVName, true));
-        PrintWriter paperPaperCitationContextsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperPaperCitationContextsCSVName, true));
-        PrintWriter paperFOSCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperIdFOSCSVName, true));
-        PrintWriter paperLanguagesCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperPaperLanguagesCSVName, true));
-	PrintWriter paperRecommendationsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperRecommendationsCSVName, true));
-        PrintWriter languageCSV = new PrintWriter(new FileWriter(targetDir + File.separator + languageCSVName, true));
-        PrintWriter urlCSV = new PrintWriter(new FileWriter(targetDir + File.separator + urlCSVName, true));
-        PrintWriter affiliatePaperCSV = new PrintWriter(new FileWriter(targetDir + File.separator + affiliatePaperCSVName, true));
-        PrintWriter paperJournalCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperJournalCSVName, true));
-        PrintWriter authorPaperCSV = new PrintWriter(new FileWriter(targetDir + File.separator + authorPaperCSVName, true));   
-        PrintWriter paperConfIdCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperConfIdCSVName, true));
-        PrintWriter paperPaperURLsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperPaperURLsForCSVName, true));
+        PrintWriter conferenceInstancesCSV = new PrintWriter(new FileWriter(targetDir + File.separator + conferenceInstancesCSVName, true));
+        PrintWriter conferenceSeriesCSV = new PrintWriter(new FileWriter(targetDir + File.separator + conferenceSeriesCSVName, true));
+        PrintWriter fieldsOfStudyChildrenCSV = new PrintWriter(new FileWriter(targetDir + File.separator +  fieldsOfStudyChildrenCSVName, true));
+        PrintWriter fieldsOfStudyCSV = new PrintWriter(new FileWriter(targetDir + File.separator + fieldsOfStudyCSVName, true));
+        PrintWriter journalsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + journalsCSVName, true));
+        PrintWriter paperAuthorAffiliationsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperAuthorAffiliationsCSVName, true));
+        PrintWriter paperAbstractInvertedIndexCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperAbstractInvertedIndexCSVName, true));
+        PrintWriter paperCitationContextsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperCitationContextsCSVName, true));
+        PrintWriter paperFieldsOfStudyCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperFieldsOfStudyCSVName, true));    
+        PrintWriter paperLanguagesCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperLanguagesCSVName, true));	
+        PrintWriter paperRecommendationsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperRecommendationsCSVName, true));
+        PrintWriter paperReferencesCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperReferencesCSVName, true));
+        PrintWriter paperResourcesCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperResourcesCSVName, true));
+        PrintWriter paperURLsCSV = new PrintWriter(new FileWriter(targetDir + File.separator + paperURLsCSVName, true));
         PrintWriter papersCSV = new PrintWriter(new FileWriter(targetDir + File.separator + papersCSVName, true));
+        PrintWriter relatedFieldOfStudyCSV = new PrintWriter(new FileWriter(targetDir + File.separator + relatedFieldOfStudyCSVName, true));
         
-        institutionCSV.println(":ID~rank~normalized_name~display_name~paper_count~citation_count~:LABEL");
-        confInstanceCSV.println(":ID~rank~normalized_name~display_name~location~official_uRL~start_date~end_date~abstract_registration_date~submission_deadline_date~notification_due_date~final_version_dues_date~paper_count~citation_count~:LABEL");
-        authorsCSV.println(":ID~rank~normalized_name~display_name~last_known_affiliation_ID~paper_count~citation_count~:LABEL");
-        abstractIndexCSV.println(":ID~indexed_abstract~:LABEL");
-        languageCSV.println(":ID~paper_language_code~:LABEL");
-        urlCSV.println(":ID~source_type~source_url~:LABEL");
-        journalCSV.println(":ID~rank~normalized_name~display_name~paper_count~citation_count~:LABEL");
-        papersCSV.println(":ID~rank~doi~doc_type~paper_title~original_title~book_title~paper_year~paper_date~publisher~volume~issue~first_page~last_page~reference_count~citation_count~estimated_citation_count~:LABEL");
-        confSeriesCSV.println(":ID~rank~normalized_name~display_name~paper_count~citation_count~:LABEL");
-        fosCSV.println(":ID~rank~normalized_name~display_name~level~paper_count~citation_count~:LABEL");
-        authorAffCSV.println(":START_ID~:END_ID~:TYPE");
-        affiliatePaperCSV.println(":START_ID~:END_ID~:TYPE");
-        paperJournalCSV.println(":START_ID~:END_ID~:TYPE");
-        authorPaperCSV.println(":START_ID~:END_ID~:TYPE");
-        paperPaperCitationContextsCSV.println(":START_ID~context~:END_ID~:TYPE");
-        paperConfIdCSV.println(":START_ID~:END_ID~:TYPE");
-        confIdConfSeriesIdCSV.println(":START_ID~:END_ID~:TYPE");
-        paperFOSCSV.println(":START_ID~:END_ID~:TYPE");
-        paperPaperAbstractCSV.println(":START_ID~:END_ID~:TYPE");
-        paperLanguagesCSV.println(":START_ID~:END_ID~:TYPE");
-        paperPaperURLsCSV.println(":START_ID~:END_ID~:TYPE");
-        fosFOSCSV.println(":START_ID~:END_ID~:TYPE");
+        
+        affiliationsCSV.println("affiliation_id~rank~normalized_name~display_name~grid_id~official_page~wiki_page~paper_count~citation_count~created_date");
+        authorsCSV.println("author_id~rank~normalized_name~display_name~last_known_affiliation_id~paper_count~citation_count~created_date");
+        conferenceInstancesCSV.println("conference_instance_id~normalized_name~display_name~conference_series_id~location~official_url~start_date~end_date~abstract_registration_date~submission_deadline_date~notification_due_date~final_version_due_date~paper_count~citation_count~created_date");
+        conferenceSeriesCSV.println("conference_series_id~rank~normalized_name~display_name~paper_count~citation_count~created_date");
+        fieldsOfStudyChildrenCSV.println("field_of_study_id~child_field_of_study_id");
+        fieldsOfStudyCSV.println("field_of_study_id~rank~normalized_name~display_name~main_type~level~paper_count~citation_count~created_date");
+        journalsCSV.println("journal_id~rank~normalized_name~display_name~lssn~publisher~web_page~paper_count~citation_count~created_date");
+        paperAbstractInvertedIndexCSV.println("paper_id~indexed_abstract");
+        paperAuthorAffiliationsCSV.println("paper_id~author_id~affiliation_id~author_sequence_number~original_affiliation");
+        paperCitationContextsCSV.println("paper_id~paper_reference_id~citation_context");
+        paperFieldsOfStudyCSV.println("paper_id~field_of_study_id~score");
+        paperLanguagesCSV.println("paper_id~language_code");
+        paperRecommendationsCSV.println("paper_id~recommended_paper_id~score");
+        paperReferencesCSV.println("paper_id~paper_reference_id");
+        paperResourcesCSV.println(":START_ID~:END_ID~:TYPE");
+        paperURLsCSV.println(":START_ID~:END_ID~:TYPE");
+        papersCSV.println("paper_id~rank~doi~doc_type~paper_title~original_title~book_title~year~date~publisher~journal_id~conference_series_id~conference_instance_id~volume~issue~first_page~last_page~reference_count~citation_count~estimated_citation_count~original_venue~created_date");
+        relatedFieldOfStudyCSV.println(":START_ID~:END_ID~:TYPE");
 
         if (sourceFiles != null && sourceFiles.length != 0) {
           for (File sourceFile : sourceFiles) {
             Constants.sourceFileNames sourceFileName = Constants.sourceFileNamesMap.get(sourceFile.getName());
             switch (sourceFileName) {
               case AFFILIATIONS:
-                   parseAffliliationsFile(sourceFile.getAbsolutePath(), institutionCSV);
+                   parseAffiliationsFile(sourceFile.getAbsolutePath(), affiliationsCSV);
                    break;
               case AUTHORS:
                    parseAuthorsFile(sourceFile.getAbsolutePath(), authorsCSV);
                    break;
               case CONFERENCE_INSTANCES:
-                   parseConfInstances(sourceFile.getAbsolutePath(), confInstanceCSV);
+                   parseConferenceInstancesFile(sourceFile.getAbsolutePath(), conferenceInstancesCSV);
                    break;
               case CONFERENCE_SERIES:
-                   parseConfSeriesFile(sourceFile.getAbsolutePath(), confSeriesCSV);
+                   parseConferenceSeriesFile(sourceFile.getAbsolutePath(), conferenceSeriesCSV);
                    break;     
               case FIELD_OF_STUDY_CHILDREN:
-                   parseFOSChildrenFile(sourceFile.getAbsolutePath(), fosFOSCSV);
+                   parseFieldsOfStudyChildrenFile(sourceFile.getAbsolutePath(), fieldsOfStudyChildrenCSV);
                    break;
               case FIELD_OF_STUDY:
-                   parseFOSFile(sourceFile.getAbsolutePath(), fosCSV);
+                   parseFieldsOfStudyFile(sourceFile.getAbsolutePath(), fieldsOfStudyCSV);
                    break;     
               case JOURNALS:
-                   parseJournalFile(sourceFile.getAbsolutePath(), journalCSV);
+                   parseJournalFile(sourceFile.getAbsolutePath(), journalsCSV);
                    break;        
               case PAPER_ABSTRACT_INVERTED_INDEX:
-                   parseAbstractInvertedIndexFile(sourceFile.getAbsolutePath(), abstractIndexCSV, paperPaperAbstractCSV);
+                   parseAbstractInvertedIndexFile(sourceFile.getAbsolutePath(), paperAbstractInvertedIndexCSV);
                    break;
               case PAPER_AUTHOR_AFFILIATIONS:
-                   parsePaperAuthorAffiliationFile(sourceFile.getAbsolutePath(),authorAffCSV, affiliatePaperCSV, authorPaperCSV);
+                   parsePaperAuthorAffiliationsFile(sourceFile.getAbsolutePath(), paperAuthorAffiliationsCSV);
                    break;
               case PAPER_CITATION_CONTEXTS:
-                   parsePaperCitationContextFile(sourceFile.getAbsolutePath(), paperPaperCitationContextsCSV);
+                   parsePaperCitationContextsFile(sourceFile.getAbsolutePath(), paperCitationContextsCSV);
                    break;
               case PAPER_FIELD_OF_STUDY:
-                   parsePaperFOSFile(sourceFile.getAbsolutePath(), paperFOSCSV);
+                   parsePaperFieldsOfStudyFile(sourceFile.getAbsolutePath(), paperFieldsOfStudyCSV);
                    break;                  
               case PAPER_LANGUAGES:
-                   parsePaperLanguagesFile(sourceFile.getAbsolutePath(), languageCSV, paperLanguagesCSV);
+                   parsePaperLanguagesFile(sourceFile.getAbsolutePath(), paperLanguagesCSV);
                    break;
               case PAPER_RECOMMENDATIONS:
-                   parsePaperRecommendationsFile(sourceFile.getAbsolutePath(), languageCSV, paperRecommendationsCSV);
+                   parsePaperRecommendationsFile(sourceFile.getAbsolutePath(), paperRecommendationsCSV);
                    break;
               case PAPER_REFERENCES:
-                   parsePaperReferencesFile(sourceFile.getAbsolutePath(), papersCSV, paperJournalCSV, paperConfIdCSV, confIdConfSeriesIdCSV);
+                   parsePaperReferencesFile(sourceFile.getAbsolutePath(), paperReferencesCSV);
                    break;   
               case PAPER_RESOURCES:
-                   parsePaperResourcesFile(sourceFile.getAbsolutePath(), papersCSV, paperJournalCSV, paperConfIdCSV, confIdConfSeriesIdCSV);
+                   parsePaperResourcesFile(sourceFile.getAbsolutePath(), paperResourcesCSV);
                    break;
               case PAPER_URLS:
-                   parsePaperURLsFile(sourceFile.getAbsolutePath(), urlCSV, paperPaperURLsCSV);
+                   parsePaperURLsFile(sourceFile.getAbsolutePath(), paperURLsCSV);
                    break;
               case PAPERS:
-                   parsePaperFile(sourceFile.getAbsolutePath(), papersCSV, paperJournalCSV, paperConfIdCSV, confIdConfSeriesIdCSV);
+                   parsePapersFile(sourceFile.getAbsolutePath(), papersCSV);
                    break;            
               case RELATED_FIELD_OF_STUDY:
-                   parseRelatedFieldOfStudy(sourceFile.getAbsolutePath(), papersCSV, paperJournalCSV, paperConfIdCSV, confIdConfSeriesIdCSV);
+                   parseRelatedFieldOfStudy(sourceFile.getAbsolutePath(), relatedFieldOfStudyCSV);
                    break;            
               default:
                    logger.error("Could not find the file type specified !!!");
@@ -265,18 +248,18 @@ public class MSAcademicsParser {
     }
     
 	// This is a function which parses the Affiliations Table in Microsoft Academic Graph Schema
-    private void parseAffliliationsFile(String path, PrintWriter outputFile) {
+    private void parseAffiliationsFile(String path, PrintWriter outputFile) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 5) {
             String intituteContent = "\""  + splits[0] + "\""  + "~" +
-                            	     "\""  + splits[1] + "\""  + "~" +
-                                     "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                            	     "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            	     "\""  + splits[4] + "\""  + "~" +
-                            	     "\""  + splits[5] + "\""  + "~institution";
+                            		 "\""  + splits[1] + "\""  + "~" +
+                            		 "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                            		 "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
+                            		 "\""  + splits[4] + "\""  + "~" +
+                            		 "\""  + splits[5] + "\""  + "~institution";
             outputFile.println(intituteContent);
           }
         }
@@ -313,26 +296,26 @@ public class MSAcademicsParser {
     }
     
     // This is a function which parses the Conference Instances Table in Microsoft Academic Graph Schema
-    private void parseConfInstances(String path, PrintWriter outputFile) {
+    private void parseConferenceInstancesFile(String path, PrintWriter outputFile) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 13) {
             String confInstanceContent = "\""  + splits[0] + "\""  + "~" +
-                            		 "\""  + splits[1] + "\""  + "~" +
-                            	         "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                            		 "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            	         "\""  + removeSpecialCharacters(splits[4]) + "\""  + "~" +
-                            		 "\""  + removeSpecialCharacters(splits[5]) + "\""  + "~" +
-                            	         "\"" + splits[6] + "\"" + "~" +
-                            	         "\"" + splits[7] + "\"" + "~"+
-                            	         "\"" + splits[8] + "\"" + "~" +
-                            	         "\"" + splits[9] + "\"" + "~" +
-                            	         "\"" + splits[10] + "\"" + "~" +
-                            	         "\"" + splits[11] + "\"" + "~" +
-                            	         "\"" + splits[12] + "\"" + "~" +
-                            	         "\"" + splits[13] + "\"" + "~conference_instance" ;
+                            			 "\""  + splits[1] + "\""  + "~" +
+                            			 "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                            			 "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
+                            			 "\""  + removeSpecialCharacters(splits[4]) + "\""  + "~" +
+                            			 "\""  + removeSpecialCharacters(splits[5]) + "\""  + "~" +
+                            			 "\"" + splits[6] + "\"" + "~" +
+                            			 "\"" + splits[7] + "\"" + "~"+
+                            			 "\"" + splits[8] + "\"" + "~" +
+                            			 "\"" + splits[9] + "\"" + "~" +
+                            			 "\"" + splits[10] + "\"" + "~" +
+                            			 "\"" + splits[11] + "\"" + "~" +
+                            			 "\"" + splits[12] + "\"" + "~" +
+                            			 "\"" + splits[13] + "\"" + "~conference_instance" ;
             outputFile.println(confInstanceContent);
           }
         }
@@ -344,18 +327,18 @@ public class MSAcademicsParser {
     }
     
     // This is a function which parses the Conference Series Table in Microsoft Academic Graph Schema   
-    private void parseConfSeriesFile(String path, PrintWriter outputFile) {
+    private void parseConferenceSeriesFile(String path, PrintWriter outputFile) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 5) {
             String confSeriesContent = "\"" + splits[0] + "\"" +  "~" +
-                              	       "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
-                              	       "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                              	       "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                              	       "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
-                              	       "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~conference_series";
+                              		   "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
+                              		   "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                              		   "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
+                              		   "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
+                              		   "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~conference_series";
             outputFile.println(confSeriesContent);
           }
         }
@@ -367,7 +350,7 @@ public class MSAcademicsParser {
     }
     
     // This is a function which parses the Field of Study Children Table in Microsoft Academic Graph Schema   
-    private void parseFOSChildrenFile(String path, PrintWriter outputFile) {
+    private void parseFieldsOfStudyChildrenFile(String path, PrintWriter outputFile) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
@@ -377,7 +360,7 @@ public class MSAcademicsParser {
             String fos2 = splits[1];
             if (fos1 != null && !fos1.equals("") && fos2 != null && !fos2.equals("")) {
               String paperFOSContent = "\"" + fos1 + "\"" + "~" +
-                                       "\"" + fos2 + "\"" + "~SUB_FIELD_OF";
+                                	   "\"" + fos2 + "\"" + "~SUB_FIELD_OF";
               outputFile.println(paperFOSContent);
             }
           }
@@ -390,7 +373,7 @@ public class MSAcademicsParser {
     }
     
     // This is a function which parses the Field of Study Table in Microsoft Academic Graph Schema   
-    private void parseFOSFile(String path, PrintWriter outputFile) {
+    private void parseFieldsOfStudyFile(String path, PrintWriter outputFile) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
@@ -421,11 +404,11 @@ public class MSAcademicsParser {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 5) {
             String abstractIndexContent = "\""  + splits[0] + "\""  + "~" +
-                            	          "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
-                            		  "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                                          "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            	          "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
-                            	          "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~journal";
+                            			  "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
+                            			  "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                            			  "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
+                            			  "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
+                            			  "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~journal";
             outputFile.println(abstractIndexContent);
           }
         }
@@ -437,7 +420,7 @@ public class MSAcademicsParser {
     }
     
     // This is a function which parses the Paper Abstract Inverted Index Table in Microsoft Academic Graph Schema   
-    private void parseAbstractInvertedIndexFile(String path, PrintWriter abstractIndexFile, PrintWriter paperAbstractIndexFile) {
+    private void parseAbstractInvertedIndexFile(String path, PrintWriter paperAbstractIndexFile) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
@@ -449,8 +432,8 @@ public class MSAcademicsParser {
             }
             long abstractId = uniqueCurrentTimeMS();
             String abstractIndexContent = "\""  + abstractId + "\""  + "~" +
-                              		  "\"" + removeSpecialCharacters(abstractString) + "\"" + "~abstract_index";
-            abstractIndexFile.println(abstractIndexContent);
+                              			  "\"" + removeSpecialCharacters(abstractString) + "\"" + "~abstract_index";
+         //   abstractIndexFile.println(abstractIndexContent);
             String paperId = splits[0];
             if (paperId != null && !paperId.equals("")) {
               String paperAbsIndexContent = "\""  + abstractId + "\""  + "~" + "\""  + paperId + "\""  + "~ABSTRACT_OF";
@@ -458,7 +441,7 @@ public class MSAcademicsParser {
             }
           }
         }
-        abstractIndexFile.flush();
+     //   abstractIndexFile.flush();
         paperAbstractIndexFile.flush();
         br.close();
       } catch (Exception e) {
@@ -466,8 +449,8 @@ public class MSAcademicsParser {
       }
     }
     
-    // This is a function which parses the Paper Author Affiliation Table in Microsoft Academic Graph Schema   
-    private void parsePaperAuthorAffiliationFile(String path, PrintWriter authorAffFile, PrintWriter affPaperFile, PrintWriter authorPaperFile) {
+    // This is a function which parses the Paper Author Affiliations Table in Microsoft Academic Graph Schema   
+    private void parsePaperAuthorAffiliationsFile(String path, PrintWriter authorAffiliationFile) {
       try {
         List<String> fileSplits = splitFile(new File(path));
         if (fileSplits != null && !fileSplits.isEmpty()) {
@@ -482,19 +465,19 @@ public class MSAcademicsParser {
                 String affliationId = splits[2];
                 if (affliationId != null && !affliationId.equals("") && authorId != null && !authorId.equals("")) {
                   String authorAffString = "\"" + authorId + "\"" + "~" + "\"" + affliationId + "\"" + "~AFFILIATED_WITH";
-                  authorAffFile.println(authorAffString);
+                  authorAffiliationFile.println(authorAffString);
                 }
                 if (affliationId != null && !affliationId.equals("") && paperId != null && !paperId.equals("")) {
                   String affPaperContent = "\"" + affliationId + "\"" + "~" + "\"" + paperId + "\"" + "~AUTHOR_AFFILIATION";
                   String combinedId = affliationId + ":" + paperId;
                   if (!affPaperLines.contains(combinedId)) {
                     affPaperLines.add(combinedId);
-                    affPaperFile.println(affPaperContent);
+                    authorAffiliationFile.println(affPaperContent);
                   }
                 }
                 if (authorId != null && !authorId.equals("") && paperId != null && !paperId.equals("")) {
                   String authorPaperContent = "\"" + authorId + "\"" + "~" + "\"" + paperId + "\"" + "~AUTHOR_OF";
-                  authorPaperFile.println(authorPaperContent);
+          //        authorPaperFile.println(authorPaperContent);
                 }
               }
             }
@@ -502,9 +485,7 @@ public class MSAcademicsParser {
           }
         }
 
-         authorAffFile.flush();
-         affPaperFile.flush();
-         authorPaperFile.flush();
+        authorAffiliationFile.flush();
 
       } catch (Exception e) {
         e.printStackTrace();
@@ -512,16 +493,16 @@ public class MSAcademicsParser {
     }
 
     // This is a function which parses the Paper Citation Contexts Table in Microsoft Academic Graph Schema
-    private void parsePaperCitationContextFile(String path, PrintWriter outputFile) {
+    private void parsePaperCitationContextsFile(String path, PrintWriter outputFile) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 2) {
-            String paperCiteContextContent = "\"" + splits[0] + "\"" + "~" +
+            String paperCiteContextsContent = "\"" + splits[0] + "\"" + "~" +
                                              "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
                                              "\"" + splits[1] + "\"" + "~CITING";
-            outputFile.println(paperCiteContextContent);
+            outputFile.println(paperCiteContextsContent);
           }
         }
         outputFile.flush();
@@ -532,7 +513,7 @@ public class MSAcademicsParser {
     }
     
     // This is a function which parses the Paper Fields of Study Table in Microsoft Academic Graph Schema
-    private void parsePaperFOSFile(String path, PrintWriter outputFile) {
+    private void parsePaperFieldsOfStudyFile(String path, PrintWriter outputFile) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
@@ -551,7 +532,7 @@ public class MSAcademicsParser {
     }
 
     // This is a function which parses the Paper Languages Table in Microsoft Academic Graph Schema
-    private void parsePaperLanguagesFile(String path, PrintWriter languageFile, PrintWriter languagePaperFile) {
+    private void parsePaperLanguagesFile(String path, PrintWriter paperLanguagesCSV) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         Map<Long, String> languageContentMap = new HashMap<>();
@@ -564,15 +545,14 @@ public class MSAcademicsParser {
             String paperId = splits[0];
             if (paperId != null && !paperId.equals("")) {
               String languagePaperContent = "\"" + langId + "\"" + "~" + "\"" + paperId + "\"" + "~LANGUAGE_OF";
-              languagePaperFile.println(languagePaperContent);
+           //   languagePaperFile.println(languagePaperContent);
             }
           }
         }
         for (Long langId : languageContentMap.keySet()) {
-          languageFile.println(languageContentMap.get(langId));
+        	paperLanguagesCSV.println(languageContentMap.get(langId));
         }
-        languageFile.flush();
-        languagePaperFile.flush();
+        paperLanguagesCSV.flush();
         br.close();
       } catch (Exception e) {
         e.printStackTrace();
@@ -580,25 +560,25 @@ public class MSAcademicsParser {
     }
     
     // This is a function which parses the Paper Recommendations Table in Microsoft Academic Graph Schema
-    private void parsePaperRecommendationsFile(String absolutePath, PrintWriter languageCSV, PrintWriter paperLanguagesCSV) {
+    private void parsePaperRecommendationsFile(String absolutePath, PrintWriter paperRecommendationsCSV) {
 	
 		
 	}    
     
     // This is a function which parses the Paper References Table in Microsoft Academic Graph Schema
-    private void parsePaperReferencesFile(String absolutePath, PrintWriter paperCSV, PrintWriter paperJournalCSV, PrintWriter paperConfIdCSV, PrintWriter confIdConfSeriesIdCSV) {
+    private void parsePaperReferencesFile(String absolutePath, PrintWriter paperReferencesCSV) {
 		
 		
 	}	
     
     // This is a function which parses the Paper Resources Table in Microsoft Academic Graph Schema
-	private void parsePaperResourcesFile(String absolutePath, PrintWriter paperCSV, PrintWriter paperJournalCSV, PrintWriter paperConfIdCSV, PrintWriter confIdConfSeriesIdCSV) {
+	private void parsePaperResourcesFile(String absolutePath, PrintWriter paperResourcesCSV) {
 	
 		
 	}    
 	
 	// This is a function which parses the Paper URLs Table in Microsoft Academic Graph Schema
-    private void parsePaperURLsFile(String path, PrintWriter urlFile, PrintWriter urlPaperFile) {
+    private void parsePaperURLsFile(String path, PrintWriter PaperURLsCSV) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
@@ -606,16 +586,15 @@ public class MSAcademicsParser {
           if (splits.length != 0 && splits.length > 2) {
             Long urlId = uniqueCurrentTimeMS();
             String urlString = "\"" + urlId + "\"" + "~" + "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" + "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~url";
-            urlFile.println(urlString);
+       //     urlFile.println(urlString);
             String paperId = splits[0];
             if (paperId != null && !paperId.equals("")) {
               String urlPaperContent = "\"" + urlId + "\"" + "~" + "\"" + paperId + "\""  + "~URL_OF";
-              urlPaperFile.println(urlPaperContent);
+          //    urlPaperFile.println(urlPaperContent);
             }
           }
         }
-        urlFile.flush();
-        urlPaperFile.flush();
+        PaperURLsCSV.flush();
         br.close();
       } catch (Exception e) {
         e.printStackTrace();
@@ -623,7 +602,7 @@ public class MSAcademicsParser {
     }	
     
     // This is a function which parses the Paper Table in Microsoft Academic Graph Schema
-    private void parsePaperFile(String path, PrintWriter paperFile, PrintWriter paperJournalFile, PrintWriter paperConfInstanceFile, PrintWriter paperConfSeriesFile) {
+    private void parsePapersFile(String path, PrintWriter paperFile) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
@@ -654,24 +633,21 @@ public class MSAcademicsParser {
             String journalId = splits[10];
             if (journalId != null && !journalId.equals("") && paperId != null && !paperId.equals("")) {
               String paperJournalContent = "\"" + paperId + "\"" + "~" + "\"" + journalId + "\"" + "~PUBLISHED_IN";
-              paperJournalFile.println(paperJournalContent);
+          //    paperJournalFile.println(paperJournalContent);
             }
             String confInstanceId = splits[12];
             if (confInstanceId != null && !confInstanceId.equals("") && paperId != null && !paperId.equals("")) {
               String paperConfInstanceContent = "\"" + paperId + "\"" + "~" + "\"" + confInstanceId + "\"" + "~PRESENTED_AT";
-              paperConfInstanceFile.println(paperConfInstanceContent);
+        //      paperConfInstanceFile.println(paperConfInstanceContent);
             }
             String confSeriesId = splits[11];
             if (confInstanceId != null && !confInstanceId.equals("") && confSeriesId != null && !confSeriesId.equals("")) {
               String paperConfSeriesContent = "\"" + confInstanceId + "\"" + "~" + "\"" + confSeriesId + "\"" + "~INSTANCE_OF";
-              paperConfSeriesFile.println(paperConfSeriesContent);
+        //      paperConfSeriesFile.println(paperConfSeriesContent);
             }
           }
         }
         paperFile.flush();
-        paperJournalFile.flush();        
-        paperConfInstanceFile.flush();
-        paperConfSeriesFile.flush();
         br.close();
       } catch (Exception e) {
         e.printStackTrace();
@@ -679,7 +655,7 @@ public class MSAcademicsParser {
     }
     
     // This is a function which parses the Related Field of Study Table in Microsoft Academic Graph Schema
-	private void parseRelatedFieldOfStudy(String absolutePath, PrintWriter paperCSV, PrintWriter paperJournalCSV, PrintWriter paperConfIdCSV, PrintWriter confIdConfSeriesIdCSV) {
+	private void parseRelatedFieldOfStudy(String absolutePath, PrintWriter paperCSV) {
 		
 		
 	}
@@ -723,10 +699,6 @@ public class MSAcademicsParser {
       }
     }
 
-    private long getUniqueId() {
-      return counter.incrementAndGet();
-    }
-
     private String removeSpecialCharacters (String inputString) {
       if (inputString.contains("\"")) {
         inputString = inputString.replace("\"", "'");
@@ -740,8 +712,8 @@ public class MSAcademicsParser {
       return inputString;
     }
 
-
-    private boolean checkForUnicode (String inputString){
+    // This is a function to check for unicode strings
+    private boolean checkForUnicode (String inputString) {
       Pattern p = Pattern.compile("\\\\u(\\p{XDigit}{4})");
       Matcher m = p.matcher(inputString);
       if (m.find()) {
