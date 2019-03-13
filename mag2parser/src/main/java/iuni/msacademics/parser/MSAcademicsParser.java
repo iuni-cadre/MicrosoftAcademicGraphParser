@@ -306,22 +306,25 @@ public class MSAcademicsParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 14) {
-            String confInstanceContent = "\"" + splits[0] + "\"" + "~" +
-            							 "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
-            							 "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                            			 "\"" + splits[3] + "\"" + "~" +
-                            			 "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
-                            			 "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~" +
-                            			 "\"" + splits[6] + "\"" + "~" +
-                            			 "\"" + splits[7] + "\"" + "~" +
-                            			 "\"" + splits[8] + "\"" + "~" +
-                            			 "\"" + splits[9] + "\"" + "~" +
-                            			 "\"" + splits[10] + "\"" + "~" +
-                            			 "\"" + splits[11] + "\"" + "~" +
-                            			 "\"" + splits[12] + "\"" + "~" +
-                            			 "\"" + splits[13] + "\"" + "~" +
-                            			 "\"" + splits[14];
-            conferenceInstancesCSV.println(confInstanceContent);
+            String conferenceInstanceContent = "\"" + splits[0] + "\"" + "~" +
+            							 	   "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
+            							       "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                            			       "\"" + splits[3] + "\"" + "~" +
+                            			       "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
+                            			       "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~" +
+                            			       "\"" + splits[6] + "\"" + "~" +
+                            			       "\"" + splits[7] + "\"" + "~" +
+                            			       "\"" + splits[8] + "\"" + "~" +
+                            			       "\"" + splits[9] + "\"" + "~" +
+                            			       "\"" + splits[10] + "\"" + "~" +
+                            			       "\"" + splits[11] + "\"" + "~" +
+                            			       "\"" + splits[12] + "\"" + "~" +
+                            			       "\"" + splits[13] + "\"" + "~" +
+                            			       "\"" + splits[14];
+        	String conferenceSeriesId = splits[4];
+            if (conferenceSeriesId != null && !conferenceSeriesId.equals("")) {
+              conferenceInstancesCSV.println(conferenceInstanceContent);
+            }
           }
         }
         conferenceInstancesCSV.flush();
@@ -365,9 +368,9 @@ public class MSAcademicsParser {
             String fos1 = splits[0];
             String fos2 = splits[1];
             if (fos1 != null && !fos1.equals("") && fos2 != null && !fos2.equals("")) {
-              String paperFOSContent = "\"" + fos1 + "\"" + "~" +
-                                	   "\"" + fos2;
-              fieldsOfStudyChildrenCSV.println(paperFOSContent);
+              String fieldOfStudyChildrenContent = "\"" + fos1 + "\"" + "~" +
+                                	   			   "\"" + fos2;
+              fieldsOfStudyChildrenCSV.println(fieldOfStudyChildrenContent);
             }
           }
         }
@@ -431,29 +434,26 @@ public class MSAcademicsParser {
       }
     }
     
+    // Ask her about unique current time and abstract ID
     // This is a function which parses the Paper Abstract Inverted Index Table in Microsoft Academic Graph Schema   
     private void parseAbstractInvertedIndexFile(String path, PrintWriter paperAbstractInvertedIndexCSV) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 1) {
-            String indexedAbstractString = splits[1];
+          if (splits.length != 0 && splits.length > 1) {      
+            String abstractInvertedIndexFileContent = "\"" + splits[0] + "\"" + "~" +
+ 	   			   									  "\"" + splits[1];
+            String paperId = splits[0];
+            String indexedAbstractString = removeSpecialCharacters(splits[1]);            
             if (checkForUnicode(indexedAbstractString)) {
               indexedAbstractString = "unicode characters detected";
             }
-            long abstractId = uniqueCurrentTimeMS();
-            String abstractIndexContent = "\"" + abstractId + "\""  + "~" +
-                              			  "\"" + removeSpecialCharacters(indexedAbstractString);
-            // abstractIndexFile.println(abstractIndexContent);
-            String paperId = splits[0];
             if (paperId != null && !paperId.equals("")) {
-              String paperAbstractIndexContent = "\""  + abstractId + "\""  + "~" + "\""  + paperId + "\""  + "~ABSTRACT_OF";
-              paperAbstractInvertedIndexCSV.println(paperAbstractIndexContent);
-            }
+              paperAbstractInvertedIndexCSV.println(abstractInvertedIndexFileContent);
+            } 
           }
         }
-        // abstractIndexFile.flush();
         paperAbstractInvertedIndexCSV.flush();
         br.close();
       } catch (Exception e) {
@@ -462,43 +462,30 @@ public class MSAcademicsParser {
     }
     
     // This is a function which parses the Paper Author Affiliations Table in Microsoft Academic Graph Schema   
-    private void parsePaperAuthorAffiliationsFile(String path, PrintWriter paperAuthorAffiliationsCSV) {
+    private void parsePaperAuthorAffiliationsFile(String path, PrintWriter paperAuthorAffiliationsCSV) {  
       try {
         List<String> fileSplits = splitFile(new File(path));
-        if (fileSplits != null && !fileSplits.isEmpty()) {
-          for (String splitPath : fileSplits) {
-            BufferedReader br = Files.newBufferedReader(Paths.get(splitPath), StandardCharsets.UTF_8);
-            Set<String> affPaperLines = new HashSet<String>();
-            for (String line; (line = br.readLine()) != null;) {
-              String[] splits = line.split("\t");
-              if (splits.length != 0 && splits.length > 2) {
-                String paperId = splits[0];
-                String authorId = splits[1];
-                String affiliationId = splits[2];
-                if (affiliationId != null && !affiliationId.equals("") && authorId != null && !authorId.equals("")) {
-                  String authorAffiliationString = "\"" + authorId + "\"" + "~" + "\"" + affiliationId;
-                  paperAuthorAffiliationsCSV.println(authorAffiliationString);
-                }
-                if (affiliationId != null && !affiliationId.equals("") && paperId != null && !paperId.equals("")) {
-                  String affiliationPaperContent = "\"" + affiliationId + "\"" + "~" + "\"" + paperId;
-                  String combinedId = affiliationId + ":" + paperId;
-                  if (!affiliationPaperLines.contains(combinedId)) {
-                    affiliationPaperLines.add(combinedId);
-                    paperAuthorAffiliationsCSV.println(affiliationPaperContent);
-                  }
-                }
-                if (authorId != null && !authorId.equals("") && paperId != null && !paperId.equals("")) {
-                  String authorPaperContent = "\"" + authorId + "\"" + "~" + "\"" + paperId + "\"" + "~AUTHOR_OF";
-                  // authorPaperFile.println(authorPaperContent);
-                }
-              }
+        if (fileSplits != null && !fileSplits.isEmpty()) {  
+    	  BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
+          for (String line; (line = br.readLine()) != null;) {
+            String[] splits = line.split("\t");
+            if (splits.length != 0 && splits.length > 4) {
+              String paperAuthorAffiliationsContent = "\"" + splits[0] + "\"" + "~" +
+                      						          "\"" + splits[1] + "\"" + "~" +
+                                                      "\"" + splits[2] + "\"" + "~" +
+                                                      "\"" + splits[3] + "\"" + "~" +
+                                                      "\"" + removeSpecialCharacters(splits[4]);
+              String paperId = splits[0];
+              String authorId = splits[1];
+              String affiliationId = splits[2];
+              if (paperId != null && !paperId.equals("") && authorId != null && !authorId.equals("") && affiliationId != null && !affiliationId.equals("")) {
+                paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
+              } 
             }
-            br.close();
           }
+          paperAuthorAffiliationsCSV.flush();
+          br.close();  
         }
-
-        paperAuthorAffiliationsCSV.flush();
-
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -514,7 +501,11 @@ public class MSAcademicsParser {
             String paperCiteContextsContent = "\"" + splits[0] + "\"" + "~" +
                                               "\"" + splits[1] + "\"" + "~" +
                                               "\"" + removeSpecialCharacters(splits[2]);
-            paperCitationContextsCSV.println(paperCiteContextsContent);
+            String paperId = splits[0];
+            String paperReferenceId = splits[1];
+            if (paperId != null && !paperId.equals("") && paperReferenceId != null && !paperReferenceId.equals("")) {
+              paperCitationContextsCSV.println(paperCiteContextsContent);
+            } 
           }
         }
         paperCitationContextsCSV.flush();
@@ -532,8 +523,13 @@ public class MSAcademicsParser {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 1) {
             String paperFOSContent = "\"" + splits[0] + "\"" + "~" +
-                                     "\"" + splits[1] + "\"" + "~";
-            paperFieldsOfStudyCSV.println(paperFOSContent);
+                                     "\"" + splits[1] + "\"" + "~" + 
+                                     "\"" + splits[2];
+            String paperId = splits[0];
+            String fieldsOfStudyId = splits[1];
+            if (paperId != null && !paperId.equals("") && fieldsOfStudyId != null && !fieldsOfStudyId.equals("")) {
+              paperFieldsOfStudyCSV.println(paperFOSContent);
+            } 
           }
         }
         paperFieldsOfStudyCSV.flush();
@@ -543,26 +539,21 @@ public class MSAcademicsParser {
       }
     }
 
+    // I have to ask Chathuri about Language Content Map 
     // This is a function which parses the Paper Languages Table in Microsoft Academic Graph Schema
     private void parsePaperLanguagesFile(String path, PrintWriter paperLanguagesCSV) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
-        Map<Long, String> languageContentMap = new HashMap<>();
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 1) {
-            Long langId = getId(languageIdMap, splits[1]);
-            String languageString = "\"" + langId + "\"" + "~" + "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~language";
-            languageContentMap.put(langId, languageString);
+            String paperLanguagesContent = "\"" + splits[0] + "\"" + "~" + 
+                                    	   "\"" + removeSpecialCharacters(splits[1]);
             String paperId = splits[0];
             if (paperId != null && !paperId.equals("")) {
-              String languagePaperContent = "\"" + langId + "\"" + "~" + "\"" + paperId + "\"" + "~LANGUAGE_OF";
-           // languagePaperFile.println(languagePaperContent);
-            }
+              paperLanguagesCSV.println(paperLanguagesContent);
+            } 
           }
-        }
-        for (Long langId : languageContentMap.keySet()) {
-          paperLanguagesCSV.println(languageContentMap.get(langId));
         }
         paperLanguagesCSV.flush();
         br.close();
@@ -577,14 +568,15 @@ public class MSAcademicsParser {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 5) {
-            String abstractIndexContent = "\""  + splits[0] + "\""  + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~";
-            paperRecommendationsCSV.println(abstractIndexContent);
+          if (splits.length != 0 && splits.length > 3) {
+            String paperRecommendationsContent = "\"" + splits[0] + "\"" + "~" +
+                            			         "\"" + splits[1] + "\"" + "~" +
+                            			         "\"" + splits[2];
+            String paperId = splits[0];
+            String paperReferenceId = splits[1];
+            if (paperId != null && !paperId.equals("") && paperReferenceId != null && !paperReferenceId.equals("")) {
+              paperRecommendationsCSV.println(paperRecommendationsContent);
+            }    
           }
         }
         paperRecommendationsCSV.flush();
@@ -601,9 +593,13 @@ public class MSAcademicsParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 1) {
-            String paperReferencesContent = "\"" + splits[0] + "\""  + "~" +
-                            			    "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~";
-            paperReferencesCSV.println(paperReferencesContent);
+            String paperReferencesContent = "\"" + splits[0] + "\"" + "~" +
+                            			    "\"" + removeSpecialCharacters(splits[1]);
+            String paperId = splits[0];
+            String paperReferenceId = splits[1];
+            if (paperId != null && !paperId.equals("") && paperReferenceId != null && !paperReferenceId.equals("")) {
+              paperReferencesCSV.println(paperReferencesContent);
+            } 
           }
         }
         paperReferencesCSV.flush();
@@ -624,8 +620,11 @@ public class MSAcademicsParser {
                             			   "\"" + splits[1] + "\"" + "~" +
                             			   "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
                             			   "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            			   "\"" + splits[4] + "\"" + "~";
-            paperResourcesCSV.println(paperResourcesContent);
+                            			   "\"" + splits[4];
+            String paperId = splits[0];
+            if (paperId != null && !paperId.equals("")) {
+              paperResourcesCSV.println(paperResourcesContent);
+            } 
           }
         }
         paperResourcesCSV.flush();
@@ -636,23 +635,22 @@ public class MSAcademicsParser {
 	}    
 	
 	// This is a function which parses the Paper URLs Table in Microsoft Academic Graph Schema
-    private void parsePaperURLsFile(String path, PrintWriter PaperURLsCSV) {
+    private void parsePaperURLsFile(String path, PrintWriter paperURLsCSV) {
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 2) {
-            Long urlId = uniqueCurrentTimeMS();
-            String urlString = "\"" + urlId + "\"" + "~" + "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" + "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~url";
-            // urlFile.println(urlString);
+            String paperURLsContent = "\"" + splits[0] + "\"" + "~" + 
+                               		  "\"" + splits[1] + "\"" + "~" + 
+            		                  "\"" + removeSpecialCharacters(splits[2]);
             String paperId = splits[0];
             if (paperId != null && !paperId.equals("")) {
-              String urlPaperContent = "\"" + urlId + "\"" + "~" + "\"" + paperId + "\""  + "~URL_OF";
-              // urlPaperFile.println(urlPaperContent);
-            }
+              paperURLsCSV.println(paperURLsContent);
+            } 
           }
         }
-        PaperURLsCSV.flush();
+        paperURLsCSV.flush();
         br.close();
       } catch (Exception e) {
         e.printStackTrace();
@@ -668,46 +666,35 @@ public class MSAcademicsParser {
           if (splits.length != 0 && splits.length > 21) {
             String paperId = splits[0];
             if (paperId != null && !paperId.equals("")) {
-              String paperString = "\"" + splits[0] + "\"" + "~" +
-                                   "\"" + splits[1] + "\"" + "~" +
-                                   "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                                   "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                                   "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
-                                   "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~" +
-                                   "\"" + removeSpecialCharacters(splits[6]) + "\"" + "~" +
-                                   "\"" + splits[7] + "\"" + "~" +
-                                   "\"" + splits[8] + "\"" + "~" +
-                                   "\"" + removeSpecialCharacters(splits[9]) + "\"" + "~" +
-                                   "\"" + splits[10] + "\"" + "~" +
-                                   "\"" + splits[11] + "\"" + "~" +
-                                   "\"" + splits[12] + "\"" + "~" +
-                                   "\"" + removeSpecialCharacters(splits[13]) + "\"" + "~" +
-                                   "\"" + removeSpecialCharacters(splits[14]) + "\"" + "~" +
-                                   "\"" + removeSpecialCharacters(splits[15]) + "\"" + "~" +
-                                   "\"" + removeSpecialCharacters(splits[16]) + "\"" + "~" +
-              					   "\"" + splits[17] + "\"" + "~" +
-              					   "\"" + splits[18] + "\"" + "~" +
-              					   "\"" + splits[19] + "\"" + "~" +
-              					   "\"" + removeSpecialCharacters(splits[20]) + "\"" + "~" +
-              					   "\"" + splits[21];
-              papersCSV.println(paperString);
+              String paperContentString = "\"" + splits[0] + "\"" + "~" +
+            		  					  "\"" + splits[1] + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[6]) + "\"" + "~" +
+                                          "\"" + splits[7] + "\"" + "~" +
+                                          "\"" + splits[8] + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[9]) + "\"" + "~" +
+                                          "\"" + splits[10] + "\"" + "~" +
+                                          "\"" + splits[11] + "\"" + "~" +
+                                          "\"" + splits[12] + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[13]) + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[14]) + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[15]) + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[16]) + "\"" + "~" +
+              					          "\"" + splits[17] + "\"" + "~" +
+              					          "\"" + splits[18] + "\"" + "~" +
+              					          "\"" + splits[19] + "\"" + "~" +
+              					          "\"" + removeSpecialCharacters(splits[20]) + "\"" + "~" +
+              					          "\"" + splits[21];
+              String journalId = splits[10];
+              String conferenceSeriesId = splits[11];
+              String conferenceInstanceId = splits[12];
+              if (journalId != null && !journalId.equals("") && conferenceSeriesId != null && !conferenceSeriesId.equals("") && conferenceInstanceId != null && !conferenceInstanceId.equals("")) {
+            	papersCSV.println(paperContentString);
+              } 
             }
-
-            String journalId = splits[10];
-            if (journalId != null && !journalId.equals("") && paperId != null && !paperId.equals("")) {
-              String paperJournalContent = "\"" + paperId + "\"" + "~" + "\"" + journalId;
-              // paperJournalFile.println(paperJournalContent);
-            }
-            String conferenceSeriesId = splits[11];
-            if (conferenceInstanceId != null && !conferenceInstanceId.equals("") && conferenceSeriesId != null && !conferenceSeriesId.equals("")) {
-              String paperConferenceSeriesContent = "\"" + conferenceInstanceId + "\"" + "~" + "\"" + conferenceSeriesId;
-              // paperConfSeriesFile.println(paperConfSeriesContent);
-            }
-            String conferenceInstanceId = splits[12];
-            if (conferenceInstanceId != null && !conferenceInstanceId.equals("") && paperId != null && !paperId.equals("")) {
-              String paperConfInstanceContent = "\"" + paperId + "\"" + "~" + "\"" + conferenceInstanceId;
-              // paperConfInstanceFile.println(paperConfInstanceContent);
-            }        
           }
         }
         papersCSV.flush();
@@ -725,13 +712,17 @@ public class MSAcademicsParser {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 6) {
             String relatedFieldOfStudyContent = "\""  + splits[0] + "\""  + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                            			  "\"" + splits[3] + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
-                            			  "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~" +
-                            			  "\"" + splits[6];
-            relatedFieldOfStudyCSV.println(relatedFieldOfStudyContent);
+                            			        "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
+                            			        "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                            			        "\"" + splits[3] + "\"" + "~" +
+                            			        "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
+                            			        "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~" +
+                            			        "\"" + splits[6];
+            String fieldOfStudyId1 = splits[0];
+            String fieldOfStudyId2 = splits[3];
+            if (fieldOfStudyId1 != null && !fieldOfStudyId1.equals("") && fieldOfStudyId2 != null && !fieldOfStudyId2.equals("")) {
+              relatedFieldOfStudyCSV.println(relatedFieldOfStudyContent);
+            } 
           }
         }
         relatedFieldOfStudyCSV.flush();
