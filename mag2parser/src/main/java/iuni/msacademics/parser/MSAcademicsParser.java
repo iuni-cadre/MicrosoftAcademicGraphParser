@@ -436,7 +436,6 @@ public class MSAcademicsParser {
       }
     }
     
-    // Ask her about unique current time and abstract ID
     // This is a function which parses the Paper Abstract Inverted Index Table in Microsoft Academic Graph Schema   
     private void parseAbstractInvertedIndexFile(String path, PrintWriter paperAbstractInvertedIndexCSV) {
       try {
@@ -482,7 +481,7 @@ public class MSAcademicsParser {
               String authorId = splits[1];
               String affiliationId = splits[2];
 	      // I am checking for the foreign key constraint here	
-              if (paperId != null && !paperId.equals("") && authorId != null && !authorId.equals("") && affiliationId != null && !affiliationId.equals("")) {
+              if (paperId != null && !paperId.equals("") && authorId != null && !authorId.equals("") && !affiliationId.equals("")) {
                 paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
               } 
             }
@@ -545,7 +544,6 @@ public class MSAcademicsParser {
       }
     }
 
-    // I have to ask Chathuri about Language Content Map 
     // This is a function which parses the Paper Languages Table in Microsoft Academic Graph Schema
     private void parsePaperLanguagesFile(String path, PrintWriter paperLanguagesCSV) {
       try {
@@ -703,7 +701,7 @@ public class MSAcademicsParser {
               String conferenceSeriesId = splits[11];
               String conferenceInstanceId = splits[12];
 	      // I am checking for the foreign key constraint here	
-              if (journalId != null && !journalId.equals("") && conferenceSeriesId != null && !conferenceSeriesId.equals("") && conferenceInstanceId != null && !conferenceInstanceId.equals("")) {
+              if (!journalId.equals("") && !conferenceSeriesId.equals("") && !conferenceInstanceId.equals("")) {
             	papersCSV.println(paperContentString);
               } 
             }
