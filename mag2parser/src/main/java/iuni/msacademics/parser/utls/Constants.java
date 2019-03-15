@@ -42,6 +42,7 @@ public class Constants {
         sourceFileNamesMap.put("PaperLanguages.txt",sourceFileNames.PAPER_LANGUAGES);
         sourceFileNamesMap.put("PaperRecommendations.txt",sourceFileNames.PAPER_RECOMMENDATIONS);
         sourceFileNamesMap.put("PaperReferences.txt",sourceFileNames.PAPER_REFERENCES);
+        sourceFileNamesMap.put("PaperResources.txt",sourceFileNames.PAPER_RESOURCES);
         sourceFileNamesMap.put("PaperUrls.txt",sourceFileNames.PAPER_URLS);
         sourceFileNamesMap.put("Papers.txt",sourceFileNames.PAPERS);
         sourceFileNamesMap.put("RelatedFieldOfStudy.txt",sourceFileNames.RELATED_FIELD_OF_STUDY);
