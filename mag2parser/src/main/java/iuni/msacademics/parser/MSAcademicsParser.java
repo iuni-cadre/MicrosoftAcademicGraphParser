@@ -262,7 +262,7 @@ public class MSAcademicsParser {
             				 "\"" + removeSpecialCharacters(splits[6]) + "\"" + "~" +
             				 "\"" + splits[7] + "\"" + "~" +
             				 "\"" + splits[8] + "\"" + "~" +
-            				 "\"" + splits[9];
+            				 "\"" + splits[9] + "\"";
             affiliationsCSV.println(affiliationsContent);
           }
         }
@@ -287,7 +287,7 @@ public class MSAcademicsParser {
                               	   "\"" + splits[4] + "\""  + "~" +
                               	   "\"" + splits[5] + "\""  + "~" +
                               	   "\"" + splits[6] + "\""  + "~" +
-                              	   "\"" + splits[7];
+                              	   "\"" + splits[7] + "\"";
             authorsCSV.println(authorContent);
           }
         }
@@ -319,7 +319,7 @@ public class MSAcademicsParser {
                             		       "\"" + splits[11] + "\"" + "~" +
                             		       "\"" + splits[12] + "\"" + "~" +
                             		       "\"" + splits[13] + "\"" + "~" +
-                            		       "\"" + splits[14];
+                            		       "\"" + splits[14] + "\"";
             String conferenceSeriesId = splits[4];
             // I am checking for the foreign key constraint here	
             if (conferenceSeriesId != null && !conferenceSeriesId.equals("")) {
@@ -347,7 +347,7 @@ public class MSAcademicsParser {
                               		     "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
                               		     "\"" + splits[4] + "\"" + "~" +
                               		     "\"" + splits[5] + "\"" + "~" +
-                              		     "\"" + splits[6];
+                              		     "\"" + splits[6] + "\"";
             conferenceSeriesCSV.println(conferenceSeriesContent);
           }
         }
@@ -370,7 +370,7 @@ public class MSAcademicsParser {
 	    // I am checking for the foreign key constraint here	
             if (fos1 != null && !fos1.equals("") && fos2 != null && !fos2.equals("")) {
               String fieldOfStudyChildrenContent = "\"" + fos1 + "\"" + "~" +
-                                	   	   "\"" + fos2;
+                                	   	   "\"" + fos2 + "\"";
               fieldsOfStudyChildrenCSV.println(fieldOfStudyChildrenContent);
             }
           }
@@ -397,7 +397,7 @@ public class MSAcademicsParser {
                               	"\"" + splits[5] + "\"" + "~" +
                                 "\"" + splits[6] + "\"" + "~" +
                                 "\"" + splits[7] + "\"" + "~" +
-                                "\"" + splits[8];
+                                "\"" + splits[8] + "\"";
             fieldsOfStudyCSV.println(fosContent);
           }
         }
@@ -424,7 +424,7 @@ public class MSAcademicsParser {
                             	    "\"" + removeSpecialCharacters(splits[6]) + "\"" + "~" +
                             	    "\"" + splits[7] + "\"" + "~" +
                             	    "\"" + splits[8] + "\"" + "~" +
-                                    "\"" + splits[9];
+                                    "\"" + splits[9] + "\"";
             journalsCSV.println(journalContent);
           }
         }
@@ -443,7 +443,7 @@ public class MSAcademicsParser {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 1) {      
             String abstractInvertedIndexFileContent = "\"" + splits[0] + "\"" + "~" +
- 	   			   		      "\"" + splits[1];
+ 	   			   		      "\"" + splits[1] + "\"";
             String paperId = splits[0];
             String indexedAbstractString = removeSpecialCharacters(splits[1]);            
             if (checkForUnicode(indexedAbstractString)) {
@@ -473,7 +473,7 @@ public class MSAcademicsParser {
                       				      "\"" + splits[1] + "\"" + "~" +
                                                       "\"" + splits[2] + "\"" + "~" +
                                                       "\"" + splits[3] + "\"" + "~" +
-                                                      "\"" + removeSpecialCharacters(splits[4]);
+                                                      "\"" + removeSpecialCharacters(splits[4]) + "\"";
               String paperId = splits[0];
               String authorId = splits[1];
 	      // I am checking for the foreign key constraint here	
@@ -498,7 +498,7 @@ public class MSAcademicsParser {
           if (splits.length != 0 && splits.length > 2) {
             String paperCiteContextsContent = "\"" + splits[0] + "\"" + "~" +
                                               "\"" + splits[1] + "\"" + "~" +
-                                              "\"" + removeSpecialCharacters(splits[2]);
+                                              "\"" + removeSpecialCharacters(splits[2]) + "\"";
             String paperId = splits[0];
             String paperReferenceId = splits[1];
 	    // I am checking for the foreign key constraint here	
@@ -523,7 +523,7 @@ public class MSAcademicsParser {
           if (splits.length != 0 && splits.length > 1) {
             String paperFOSContent = "\"" + splits[0] + "\"" + "~" +
                                      "\"" + splits[1] + "\"" + "~" + 
-                                     "\"" + splits[2];
+                                     "\"" + splits[2] + "\"";
             String paperId = splits[0];
             String fieldsOfStudyId = splits[1];
 	    // I am checking for the foreign key constraint here	
@@ -547,7 +547,7 @@ public class MSAcademicsParser {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 1) {
             String paperLanguagesContent = "\"" + splits[0] + "\"" + "~" + 
-                                    	   "\"" + removeSpecialCharacters(splits[1]);
+                                    	   "\"" + removeSpecialCharacters(splits[1]) + "\"";
             String paperId = splits[0];
 	    // I am checking for the foreign key constraint here	
             if (paperId != null && !paperId.equals("")) {
@@ -571,7 +571,7 @@ public class MSAcademicsParser {
           if (splits.length != 0 && splits.length > 2) {
             String paperRecommendationsContent = "\"" + splits[0] + "\"" + "~" +
                             			 "\"" + splits[1] + "\"" + "~" +
-                            			 "\"" + splits[2];
+                            			 "\"" + splits[2] + "\"";
             String paperId = splits[0];
             String recommendedPaperId = splits[1];
 	    // I am checking for the foreign key constraint here	
@@ -595,7 +595,7 @@ public class MSAcademicsParser {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 1) {
             String paperReferencesContent = "\"" + splits[0] + "\"" + "~" +
-                            		    "\"" + removeSpecialCharacters(splits[1]);
+                            		    "\"" + removeSpecialCharacters(splits[1]) + "\"";
             String paperId = splits[0];
             String paperReferenceId = splits[1];
 	    // I am checking for the foreign key constraint here	
@@ -622,7 +622,7 @@ public class MSAcademicsParser {
                             		   "\"" + splits[1] + "\"" + "~" +
                             		   "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
                             		   "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            	           "\"" + splits[4];
+                            	           "\"" + splits[4] + "\"";
             String paperId = splits[0];
 	    // I am checking for the foreign key constraint here	
             if (paperId != null && !paperId.equals("")) {
@@ -646,7 +646,7 @@ public class MSAcademicsParser {
           if (splits.length != 0 && splits.length > 2) {
             String paperURLsContent = "\"" + splits[0] + "\"" + "~" + 
                                	      "\"" + splits[1] + "\"" + "~" + 
-            		              "\"" + removeSpecialCharacters(splits[2]);
+            		              "\"" + removeSpecialCharacters(splits[2]) + "\"";
             String paperId = splits[0];
 	    // I am checking for the foreign key constraint here	
             if (paperId != null && !paperId.equals("")) {
@@ -689,7 +689,7 @@ public class MSAcademicsParser {
               			          "\"" + splits[18] + "\"" + "~" +
               	                          "\"" + splits[19] + "\"" + "~" +
               		                  "\"" + removeSpecialCharacters(splits[20]) + "\"" + "~" +
-                                          "\"" + splits[21];
+                                          "\"" + splits[21] + "\"";
               papersCSV.println(paperContentString);
           }
         }
@@ -711,7 +711,7 @@ public class MSAcademicsParser {
                             			"\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
                             			"\"" + splits[2] + "\"" + "~" +
                             			"\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            			"\"" + splits[4];
+                            			"\"" + splits[4] + "\"";
             String fieldOfStudyId1 = splits[0];
             String fieldOfStudyId2 = splits[2];
 	    // I am checking for the foreign key constraint here	  
