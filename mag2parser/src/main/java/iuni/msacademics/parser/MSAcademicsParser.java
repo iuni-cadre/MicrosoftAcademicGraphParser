@@ -444,9 +444,7 @@ public class MSAcademicsParser {
           if (splits.length != 0 && splits.length > 1) {      
             String paperId = splits[0];
             String indexedAbstractString = removeSpecialCharacters(splits[1]);            
-            if (checkForUnicode(indexedAbstractString)) {
-              indexedAbstractString = "unicode characters detected";
-            }
+
             String abstractInvertedIndexFileContent = "\"" + paperId + "\"" + "~" +
 			   		      "\"" + indexedAbstractString + "\"";
 	    // I am checking for the foreign key constraint here	
@@ -496,8 +494,8 @@ public class MSAcademicsParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 2) {
-            String paperCiteContextsContent = "\"" + splits[0] + "\"" + "~" +
-                                              "\"" + splits[1] + "\"" + "~" +
+            String paperCiteContextsContent = "\"" + removeSpecialCharacters(splits[0]) + "\"" + "~" +
+                                              "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
                                               "\"" + removeSpecialCharacters(splits[2]) + "\"";
             String paperId = splits[0];
             String paperReferenceId = splits[1];
