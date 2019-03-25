@@ -494,8 +494,8 @@ public class MSAcademicsParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 2) {
-            String paperCiteContextsContent = "\"" + removeSpecialCharacters(splits[0]) + "\"" + "~" +
-                                              "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
+            String paperCiteContextsContent = "\"" + splits[0] + "\"" + "~" +
+                                              "\"" + splits[1] + "\"" + "~" +
                                               "\"" + removeSpecialCharacters(splits[2]) + "\"";
             String paperId = splits[0];
             String paperReferenceId = splits[1];
@@ -518,7 +518,7 @@ public class MSAcademicsParser {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 1) {
+          if (splits.length != 0 && splits.length > 2) {
             String paperFOSContent = "\"" + splits[0] + "\"" + "~" +
                                      "\"" + splits[1] + "\"" + "~" + 
                                      "\"" + splits[2] + "\"";
