@@ -206,6 +206,7 @@ public class MSAcademicsParser {
                    break;
               case PAPER_AUTHOR_AFFILIATIONS:
                    parsePaperAuthorAffiliationsFile(sourceFile.getAbsolutePath(), paperAuthorAffiliationsCSV);
+                   System.out.println("The absolute path of the source file is: " + sourceFile.getAbsolutePath());
                    break;
               case PAPER_CITATION_CONTEXTS:
                    parsePaperCitationContextsFile(sourceFile.getAbsolutePath(), paperCitationContextsCSV);
@@ -463,23 +464,82 @@ public class MSAcademicsParser {
     // This is a function which parses the Paper Author Affiliations Table in Microsoft Academic Graph Schema   
     private void parsePaperAuthorAffiliationsFile(String path, PrintWriter paperAuthorAffiliationsCSV) {  
       try {
+          System.out.println("The path variable is: " + path);
     	  BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
+	  int lineCount = 0;
           for (String line; (line = br.readLine()) != null;) {
-            String[] splits = line.split("\t");
+            lineCount = lineCount + 1;
+	    String[] splits = line.split("\t");
+            
             if (splits.length != 0 && splits.length > 4) {
               String paperAuthorAffiliationsContent = "\"" + splits[0] + "\"" + "~" +
                       				      "\"" + splits[1] + "\"" + "~" +
                                                       "\"" + splits[2] + "\"" + "~" +
                                                       "\"" + splits[3] + "\"" + "~" +
-                                                      "\"" + removeSpecialCharacters(splits[4]) + "\"";
-              String paperId = splits[0];
-              String authorId = splits[1];
+						      "\"" + removeSpecialCharacters(splits[4]) + "\"";
+             	// String paperId = splits[0];
+             	// String authorId = splits[1];
+	      paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
+            }
+            else if (splits.length != 0 && splits.length == 4) {
+              splits[4] = "";
+              String paperAuthorAffiliationsContent = "\"" + splits[0] + "\"" + "~" +
+                      				      "\"" + splits[1] + "\"" + "~" +
+                                                      "\"" + splits[2] + "\"" + "~" +
+                                                      "\"" + splits[3] + "\"" + "~" +
+						      "\"" + removeSpecialCharacters(splits[4]) + "\"";
+             	// String paperId = splits[0];
+             	// String authorId = splits[1];
+	      paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
+            }
+            else if (splits.length != 0 && splits.length == 3) {
+              splits[3] = "";
+              splits[4] = "";
+              String paperAuthorAffiliationsContent = "\"" + splits[0] + "\"" + "~" +
+                      				      "\"" + splits[1] + "\"" + "~" +
+                                                      "\"" + splits[2] + "\"" + "~" +
+                                                      "\"" + splits[3] + "\"" + "~" +
+						      "\"" + removeSpecialCharacters(splits[4]) + "\"";
+             	// String paperId = splits[0];
+             	// String authorId = splits[1];
+	      paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
+            }
+            else if (splits.length != 0 && splits.length == 2) {
+              splits[2] = "";
+              splits[3] = "";
+              splits[4] = "";
+              String paperAuthorAffiliationsContent = "\"" + splits[0] + "\"" + "~" +
+                      				      "\"" + splits[1] + "\"" + "~" +
+                                                      "\"" + splits[2] + "\"" + "~" +
+                                                      "\"" + splits[3] + "\"" + "~" +
+						      "\"" + removeSpecialCharacters(splits[4]) + "\"";
+             	// String paperId = splits[0]
+             	// String authorId = splits[1];
+	      paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
+            }
+            else if (splits.length != 0 && splits.length == 1) {
+              splits[1] = "";
+              splits[2] = "";
+              splits[3] = "";
+              splits[4] = "";
+              String paperAuthorAffiliationsContent = "\"" + splits[0] + "\"" + "~" +
+                      				      "\"" + splits[1] + "\"" + "~" +
+                                                      "\"" + splits[2] + "\"" + "~" +
+                                                      "\"" + splits[3] + "\"" + "~" +
+						      "\"" + removeSpecialCharacters(splits[4]) + "\"";
+             	// String paperId = splits[0];
+             	// String authorId = splits[1];
+	      paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
+            }
+            
+	      
 	      // I am checking for the foreign key constraint here	
-              if (paperId != null && !paperId.equals("") && authorId != null && !authorId.equals("")) {
+              /*if (paperId != null && !paperId.equals("") && authorId != null && !authorId.equals("")) {
                 paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
               } 
-            }
+	      */            
           }
+          System.out.println("Line Count of Paper Author Affiliations is: " + lineCount);		
           paperAuthorAffiliationsCSV.flush();
           br.close();  
       } catch (Exception e) {
