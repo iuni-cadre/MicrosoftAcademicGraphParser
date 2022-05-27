@@ -45,13 +45,13 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         PrintWriter relatedFieldOfStudyCSV = new PrintWriter(new FileWriter(targetDir + File.separator + relatedFieldOfStudyCSVName, true));
         
         
-        affiliationsCSV.println("affiliation_id~rank~normalized_name~display_name~grid_id~official_page~wiki_page~paper_count~citation_count~created_date");
-        authorsCSV.println("author_id~rank~normalized_name~display_name~last_known_affiliation_id~paper_count~citation_count~created_date");
-        conferenceInstancesCSV.println("conference_instance_id~normalized_name~display_name~conference_series_id~location~official_url~start_date~end_date~abstract_registration_date~submission_deadline_date~notification_due_date~final_version_due_date~paper_count~citation_count~created_date");
-        conferenceSeriesCSV.println("conference_series_id~rank~normalized_name~display_name~paper_count~citation_count~created_date");
+        affiliationsCSV.println("affiliation_id~rank~normalized_name~display_name~grid_id~official_page~wiki_page~paper_count~paper_family_count~citation_count~iso3166_code~created_date");
+        authorsCSV.println("author_id~rank~normalized_name~display_name~last_known_affiliation_id~paper_count~paper_family_count~citation_count~created_date");
+        conferenceInstancesCSV.println("conference_instance_id~normalized_name~display_name~conference_series_id~location~official_url~start_date~end_date~abstract_registration_date~submission_deadline_date~notification_due_date~final_version_due_date~paper_count~paper_family_count~citation_count~created_date");
+        conferenceSeriesCSV.println("conference_series_id~rank~normalized_name~display_name~paper_count~paper_family_count~citation_count~created_date");
         fieldOfStudyChildrenCSV.println("field_of_study_id~child_field_of_study_id");
-        fieldsOfStudyCSV.println("field_of_study_id~rank~normalized_name~display_name~main_type~level~paper_count~citation_count~created_date");
-        journalsCSV.println("journal_id~rank~normalized_name~display_name~lssn~publisher~web_page~paper_count~citation_count~created_date");
+        fieldsOfStudyCSV.println("field_of_study_id~rank~normalized_name~display_name~main_type~level~paper_count~paper_family_count~citation_count~created_date");
+        journalsCSV.println("journal_id~rank~normalized_name~display_name~issn~publisher~web_page~paper_count~paper_family_count~citation_count~created_date");
         paperAbstractInvertedIndexCSV.println("paper_id~indexed_abstract");
         paperAuthorAffiliationsCSV.println("paper_id~author_id~affiliation_id~author_sequence_number~original_affiliation");
         paperCitationContextsCSV.println("paper_id~paper_reference_id~citation_context");
@@ -60,9 +60,9 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         paperRecommendationsCSV.println("paper_id~recommended_paper_id~score");
         paperReferencesCSV.println("paper_id~paper_reference_id");
         paperResourcesCSV.println("paper_id~resource_type~resource_url~source_url~relationship_type");
-        paperURLsCSV.println("paper_id~source_type~source_url");
-        papersCSV.println("paper_id~rank~doi~doc_type~paper_title~original_title~book_title~year~date~publisher~journal_id~conference_series_id~conference_instance_id~volume~issue~first_page~last_page~reference_count~citation_count~estimated_citation~original_venue~created_date");
-        relatedFieldOfStudyCSV.println("field_of_study_id1~display_name1~type1~field_of_study_id2~display_name2~type2~rank");
+        paperURLsCSV.println("paper_id~source_type~source_url~language_code");
+        papersCSV.println("paper_id~rank~doi~doc_type~paper_title~original_title~book_title~year~date~publisher~journal_id~conference_series_id~conference_instance_id~volume~issue~first_page~last_page~reference_count~citation_count~estimated_citation~original_venue~family_id~family_rank~created_date");
+        relatedFieldOfStudyCSV.println("field_of_study_id1~type1~field_of_study_id2~type2~rank");
 
         if (sourceFiles != null && sourceFiles.length != 0) {
           for (File sourceFile : sourceFiles) {
@@ -141,17 +141,19 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 9) {
-            String affiliationsContent = "\"" + splits[0] + "\""  + "~" +
-                            		 "\"" + splits[1] + "\""  + "~" +
+          if (splits.length != 0 && splits.length > 13) {
+            String affiliationsContent = splits[0] + "~" +
+                            		 splits[1] + "~" +
                             		 "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
                             		 "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
                             		 "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
                             		 "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~" +
             				 "\"" + removeSpecialCharacters(splits[6]) + "\"" + "~" +
-            				 "\"" + splits[7] + "\"" + "~" +
-            				 "\"" + splits[8] + "\"" + "~" +
-            				 "\"" + splits[9] + "\"";
+            				 splits[7] + "~" +
+            				 splits[8] + "~" +
+            				 splits[9] + "~" +
+            				 "\"" + removeSpecialCharacters(splits[10]) + "\"" + "~" +
+            				 "\"" + splits[13] + "\"";
             affiliationsCSV.println(affiliationsContent);
           }
         }
@@ -168,15 +170,16 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 7) {
-            String authorContent = "\"" + splits[0] + "\""  + "~" +
-                              	   "\"" + splits[1] + "\""  + "~" +
+          if (splits.length != 0 && splits.length > 8) {
+            String authorContent = splits[0] + "~" +
+                              	   splits[1] + "~" +
                               	   "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
                               	   "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                              	   "\"" + splits[4] + "\""  + "~" +
-                              	   "\"" + splits[5] + "\""  + "~" +
-                              	   "\"" + splits[6] + "\""  + "~" +
-                              	   "\"" + splits[7] + "\"";
+                              	   splits[4] + "~" +
+                              	   splits[5] + "~" +
+                              	   splits[6] + "~" +
+                              	   splits[7] + "~" +
+                              	   "\"" + splits[8] + "\"";
             authorsCSV.println(authorContent);
           }
         }
@@ -193,11 +196,11 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 14) {
-            String conferenceInstanceContent = "\"" + splits[0] + "\"" + "~" +
+          if (splits.length != 0 && splits.length > 17) {
+            String conferenceInstanceContent = splits[0] + "~" +
             				       "\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
             				       "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
-                            		       "\"" + splits[3] + "\"" + "~" +
+                            		       splits[3] + "~" +
                             		       "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
                             		       "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~" +
                             		       "\"" + splits[6] + "\"" + "~" +
@@ -206,10 +209,11 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
                             		       "\"" + splits[9] + "\"" + "~" +
                             		       "\"" + splits[10] + "\"" + "~" +
                             		       "\"" + splits[11] + "\"" + "~" +
-                            		       "\"" + splits[12] + "\"" + "~" +
-                            		       "\"" + splits[13] + "\"" + "~" +
-                            		       "\"" + splits[14] + "\"";
-            String conferenceSeriesId = splits[4];
+                            		       splits[12] + "~" +
+                            		       splits[13] + "~" +
+                            		       splits[14] + "~" +
+                                               "\"" + splits[17] + "\"";
+            String conferenceSeriesId = splits[3];
             // I am checking for the foreign key constraint here	
             if (conferenceSeriesId != null && !conferenceSeriesId.equals("")) {
               conferenceInstancesCSV.println(conferenceInstanceContent);
@@ -229,14 +233,15 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 6) {
-            String conferenceSeriesContent = "\"" + splits[0] + "\"" + "~" +
-                              		     "\"" + splits[1] + "\"" + "~" +
+          if (splits.length != 0 && splits.length > 7) {
+            String conferenceSeriesContent = splits[0] + "~" +
+                              		     splits[1] + "~" +
                               		     "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
                               		     "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                              		     "\"" + splits[4] + "\"" + "~" +
-                              		     "\"" + splits[5] + "\"" + "~" +
-                              		     "\"" + splits[6] + "\"";
+                              		     splits[4] + "~" +
+                              		     splits[5] + "~" +
+                              		     splits[6] + "~" +
+                              		     "\"" + splits[7] + "\"";
             conferenceSeriesCSV.println(conferenceSeriesContent);
           }
         }
@@ -258,8 +263,8 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
             String fos2 = splits[1];
 	    // I am checking for the foreign key constraint here	
             if (fos1 != null && !fos1.equals("") && fos2 != null && !fos2.equals("")) {
-              String fieldOfStudyChildrenContent = "\"" + fos1 + "\"" + "~" +
-                                	   	   "\"" + fos2 + "\"";
+              String fieldOfStudyChildrenContent = fos1 + "~" +
+                                	   	   fos2;
               fieldsOfStudyChildrenCSV.println(fieldOfStudyChildrenContent);
             }
           }
@@ -277,16 +282,17 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 8) {
-            String fosContent = "\"" + splits[0] + "\"" + "~" +
-                              	"\"" + splits[1] + "\"" + "~" +
+          if (splits.length != 0 && splits.length > 9) {
+            String fosContent = splits[0] + "~" +
+                              	splits[1] + "~" +
                               	"\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
                                 "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
                                 "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
-                              	"\"" + splits[5] + "\"" + "~" +
-                                "\"" + splits[6] + "\"" + "~" +
-                                "\"" + splits[7] + "\"" + "~" +
-                                "\"" + splits[8] + "\"";
+                              	splits[5] + "~" +
+                                splits[6] + "~" +
+                                splits[7] + "~" +
+                                splits[8] + "~" +
+                                "\"" + splits[9] + "\"";
             fieldsOfStudyCSV.println(fosContent);
           }
         }
@@ -303,17 +309,18 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 9) {
-            String journalContent = "\"" + splits[0] + "\"" + "~" +
-                            	    "\"" + splits[1] + "\"" + "~" +
+          if (splits.length != 0 && splits.length > 10) {
+            String journalContent = splits[0] + "~" +
+                            	    splits[1] + "~" +
                             	    "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
                             	    "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
                             	    "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
                             	    "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~" +
                             	    "\"" + removeSpecialCharacters(splits[6]) + "\"" + "~" +
-                            	    "\"" + splits[7] + "\"" + "~" +
-                            	    "\"" + splits[8] + "\"" + "~" +
-                                    "\"" + splits[9] + "\"";
+                            	    splits[7] + "~" +
+                            	    splits[8] + "~" +
+                            	    splits[9] + "~" +
+                                    "\"" + splits[10] + "\"";
             journalsCSV.println(journalContent);
           }
         }
@@ -334,7 +341,7 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
             String paperId = splits[0];
             String indexedAbstractString = removeSpecialCharacters(splits[1]);            
 
-            String abstractInvertedIndexFileContent = "\"" + paperId + "\"" + "~" +
+            String abstractInvertedIndexFileContent = paperId + "~" +
 			   		      "\"" + indexedAbstractString + "\"";
 	    // I am checking for the foreign key constraint here	
             if (paperId != null && !paperId.equals("")) {
@@ -359,38 +366,38 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
                 lineCount = lineCount + 1;
                 String[] splits = line.split("\t");
 
-                if (splits.length > 4) {
-                    String paperAuthorAffiliationsContent = "\"" + splits[0] + "\"" + "~" +
-                            "\"" + splits[1] + "\"" + "~" +
-                            "\"" + splits[2] + "\"" + "~" +
-                            "\"" + splits[3] + "\"" + "~" +
-                            "\"" + removeSpecialCharacters(splits[4]) + "\"";
+                if (splits.length > 5) {
+                    String paperAuthorAffiliationsContent = splits[0] + "~" +
+                            splits[1] + "~" +
+                            splits[2] + "~" +
+                            splits[3] + "~" +
+                            "\"" + removeSpecialCharacters(splits[5]) + "\"";
                     // String paperId = splits[0];
                     // String authorId = splits[1];
                     paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
                 } else if (splits.length > 3) {
-                    String paperAuthorAffiliationsContent = "\"" + splits[0] + "\"" + "~" +
-                            "\"" + splits[1] + "\"" + "~" +
-                            "\"" + splits[2] + "\"" + "~" +
-                            "\"" + splits[3] + "\"" + "~" +
+                    String paperAuthorAffiliationsContent = splits[0] + "~" +
+                            splits[1] + "~" +
+                            splits[2] + "~" +
+                            splits[3] + "~" +
                             "\"" +"\"";
                     // String paperId = splits[0];
                     // String authorId = splits[1];
                     paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
                 } else if (splits.length > 2) {
-                    String paperAuthorAffiliationsContent = "\"" + splits[0] + "\"" + "~" +
-                            "\"" + splits[1] + "\"" + "~" +
-                            "\"" + splits[2] + "\"" + "~" +
-                            "\"" + "\"" + "~" +
+                    String paperAuthorAffiliationsContent = splits[0] + "~" +
+                            splits[1] + "~" +
+                            splits[2] + "~" +
+                            "~" +
                             "\""  + "\"";
                     // String paperId = splits[0];
                     // String authorId = splits[1];
                     paperAuthorAffiliationsCSV.println(paperAuthorAffiliationsContent);
                 } else if (splits.length > 1) {
-                    String paperAuthorAffiliationsContent = "\"" + splits[0] + "\"" + "~" +
-                            "\"" +  "\"" + "~" +
-                            "\"" + "\"" + "~" +
-                            "\"" +  "\"" + "~" +
+                    String paperAuthorAffiliationsContent = splits[0] + "~" +
+                            "~" +
+                            "~" +
+                            "~" +
                             "\"" + "\"";
                     // String paperId = splits[0]
                     // String authorId = splits[1];
@@ -429,8 +436,8 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 2) {
-            String paperCiteContextsContent = "\"" + splits[0] + "\"" + "~" +
-                                              "\"" + splits[1] + "\"" + "~" +
+            String paperCiteContextsContent = splits[0] + "~" +
+                                              splits[1] + "~" +
                                               "\"" + removeSpecialCharacters(splits[2]) + "\"";
             String paperId = splits[0];
             String paperReferenceId = splits[1];
@@ -454,9 +461,9 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 2) {
-            String paperFOSContent = "\"" + splits[0] + "\"" + "~" +
-                                     "\"" + splits[1] + "\"" + "~" + 
-                                     "\"" + splits[2] + "\"";
+            String paperFOSContent = splits[0] + "~" +
+                                     splits[1] + "~" + 
+                                     splits[2];
             String paperId = splits[0];
             String fieldsOfStudyId = splits[1];
 	    // I am checking for the foreign key constraint here	
@@ -502,9 +509,9 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 2) {
-            String paperRecommendationsContent = "\"" + splits[0] + "\"" + "~" +
-                            			 "\"" + splits[1] + "\"" + "~" +
-                            			 "\"" + splits[2] + "\"";
+            String paperRecommendationsContent = splits[0] + "~" +
+                            			 splits[1] + "~" +
+                            			 splits[2];
             String paperId = splits[0];
             String recommendedPaperId = splits[1];
 	    // I am checking for the foreign key constraint here	
@@ -527,8 +534,8 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 1) {
-            String paperReferencesContent = "\"" + splits[0] + "\"" + "~" +
-                            		    "\"" + removeSpecialCharacters(splits[1]) + "\"";
+            String paperReferencesContent = splits[0] + "~" +
+                            		    splits[1];
             String paperId = splits[0];
             String paperReferenceId = splits[1];
 	    // I am checking for the foreign key constraint here	
@@ -551,11 +558,11 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 4) {
-            String paperResourcesContent = "\"" + splits[0] + "\"" + "~" +
-                            		   "\"" + splits[1] + "\"" + "~" +
+            String paperResourcesContent = splits[0] + "~" +
+                            		   splits[1] + "~" +
                             		   "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
                             		   "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            	           "\"" + splits[4] + "\"";
+                            	           splits[4];
             String paperId = splits[0];
 	    // I am checking for the foreign key constraint here	
             if (paperId != null && !paperId.equals("")) {
@@ -573,20 +580,36 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
     // This is a function which parses the Paper URLs Table in Microsoft Academic Graph Schema
     private void parsePaperURLsFile(String path, PrintWriter paperURLsCSV) {
       try {
+        System.out.println("The path variable is: " + path);
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
+        long lineCount = 0;
         for (String line; (line = br.readLine()) != null;) {
+          lineCount = lineCount + 1;
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 2) {
-            String paperURLsContent = "\"" + splits[0] + "\"" + "~" + 
-                               	      "\"" + splits[1] + "\"" + "~" + 
-            		              "\"" + removeSpecialCharacters(splits[2]) + "\"";
-            String paperId = splits[0];
-	    // I am checking for the foreign key constraint here	
-            if (paperId != null && !paperId.equals("")) {
-              paperURLsCSV.println(paperURLsContent);
-            } 
+
+          if (splits.length > 3) {
+            String paperURLsContent = splits[0] + "~" + 
+                               	      splits[1] + "~" + 
+            		              "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+            		              "\"" + removeSpecialCharacters(splits[3]) + "\"";
+            //String paperId = splits[0];
+            paperURLsCSV.println(paperURLsContent);
+          } else if (splits.length > 2) {
+            String paperURLsContent = splits[0] + "~" +
+                                    splits[1] + "~" +
+                                    "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+                                    "\"" + "\"";
+            //System.out.println("3: " + splits[0] + "  " + splits[1] + "  " + splits[2]);
+            paperURLsCSV.println(paperURLsContent);
           }
+          
+	  // I am checking for the foreign key constraint here	
+/*        if (paperId != null && !paperId.equals("")) {
+            paperURLsCSV.println(paperURLsContent);
+          } */ 
         }
+
+        System.out.println("Line count of paper urls is: " + lineCount);
         paperURLsCSV.flush();
         br.close();
       } catch (Exception e) {
@@ -600,29 +623,32 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 21) {
-              String paperContentString = "\"" + splits[0] + "\"" + "~" +
-            		  	          "\"" + splits[1] + "\"" + "~" +
+          if (splits.length != 0 && splits.length > 25) {
+              String paperContentString = splits[0] + "~" +
+            		  	          splits[1] + "~" +
                                           "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
                                           "\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
                                           "\"" + removeSpecialCharacters(splits[4]) + "\"" + "~" +
                                           "\"" + removeSpecialCharacters(splits[5]) + "\"" + "~" +
                                           "\"" + removeSpecialCharacters(splits[6]) + "\"" + "~" +
-                                          "\"" + splits[7] + "\"" + "~" +
+                                          splits[7] + "~" +
                                           "\"" + splits[8] + "\"" + "~" +
-                                          "\"" + removeSpecialCharacters(splits[9]) + "\"" + "~" +
-                                          "\"" + splits[10] + "\"" + "~" +
-                                          "\"" + splits[11] + "\"" + "~" +
-                                          "\"" + splits[12] + "\"" + "~" +
-                                          "\"" + removeSpecialCharacters(splits[13]) + "\"" + "~" +
+                                          "\"" + removeSpecialCharacters(splits[10]) + "\"" + "~" +
+                                          splits[11] + "~" +
+                                          splits[12] + "~" +
+                                          splits[13] + "~" +
                                           "\"" + removeSpecialCharacters(splits[14]) + "\"" + "~" +
                                           "\"" + removeSpecialCharacters(splits[15]) + "\"" + "~" +
                                           "\"" + removeSpecialCharacters(splits[16]) + "\"" + "~" +
-              			          "\"" + splits[17] + "\"" + "~" +
-              			          "\"" + splits[18] + "\"" + "~" +
-              	                          "\"" + splits[19] + "\"" + "~" +
-              		                  "\"" + removeSpecialCharacters(splits[20]) + "\"" + "~" +
-                                          "\"" + splits[21] + "\"";
+                                          "\"" + removeSpecialCharacters(splits[17]) + "\"" + "~" +
+              			          splits[18] + "~" +
+              			          splits[19] + "~" +
+              	                          splits[20] + "~" +
+              		                  "\"" + removeSpecialCharacters(splits[21]) + "\"" + "~" +
+                                          splits[22] + "~" +
+                                          splits[23] + "~" +
+                                          "\"" + splits[25] + "\"";
+                                          
               papersCSV.println(paperContentString);
           }
         }
@@ -640,11 +666,11 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 4) {
-            String relatedFieldOfStudyContent = "\""  + splits[0] + "\""  + "~" +
+            String relatedFieldOfStudyContent = splits[0] + "~" +
                             			"\"" + removeSpecialCharacters(splits[1]) + "\"" + "~" +
-                            			"\"" + splits[2] + "\"" + "~" +
+                            			splits[2] + "~" +
                             			"\"" + removeSpecialCharacters(splits[3]) + "\"" + "~" +
-                            			"\"" + splits[4] + "\"";
+                            			splits[4];
             String fieldOfStudyId1 = splits[0];
             String fieldOfStudyId2 = splits[2];
 	    // I am checking for the foreign key constraint here	  

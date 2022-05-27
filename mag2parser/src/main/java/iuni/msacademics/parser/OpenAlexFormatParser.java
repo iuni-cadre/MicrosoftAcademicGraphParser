@@ -5,6 +5,7 @@ import iuni.msacademics.parser.utls.Constants;
 import org.slf4j.Logger;
 
 import java.io.*;
+import java.util.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -114,12 +115,12 @@ final public class OpenAlexFormatParser extends MAGFormatParser {
               case PAPER_RESOURCES:
                    parsePaperResourcesFile(sourceFile.getAbsolutePath(), paperResourcesCSV);
                    break;
-              case PAPER_URLS:
-                   parsePaperURLsFile(sourceFile.getAbsolutePath(), paperURLsCSV);
-                   break;
               case PAPERS:
                    parsePapersFile(sourceFile.getAbsolutePath(), papersCSV);
                    break;            
+              case PAPER_URLS:
+                   parsePaperURLsFile(sourceFile.getAbsolutePath(), paperURLsCSV);
+                   break;
               case RELATED_FIELD_OF_STUDY:
                    parseRelatedFieldOfStudy(sourceFile.getAbsolutePath(), relatedFieldOfStudyCSV);
                    break;            
@@ -168,11 +169,14 @@ final public class OpenAlexFormatParser extends MAGFormatParser {
     
     // This is a function which parses the Authors Table in Microsoft Academic Graph Schema
     private void parseAuthorsFile(String path, PrintWriter authorsCSV) {
+      long lineCount = 0;
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         // Skip header
         br.readLine();
+        lineCount = lineCount + 1;
         for (String line; (line = br.readLine()) != null;) {
+          lineCount = lineCount + 1;
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 9) {
             String authorContent = splits[0] + "~" +
@@ -191,6 +195,7 @@ final public class OpenAlexFormatParser extends MAGFormatParser {
         br.close();
       } catch (Exception e) {
         e.printStackTrace();
+        System.out.println("lineCount: " + lineCount);
       }
     }
     
@@ -625,7 +630,7 @@ final public class OpenAlexFormatParser extends MAGFormatParser {
         br.readLine();
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 10) {
+          if (splits.length > 10) {
             String paperURLsContent = splits[0] + "~" + 
                                	      splits[1] + "~" + 
             		              "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
@@ -634,7 +639,44 @@ final public class OpenAlexFormatParser extends MAGFormatParser {
             String paperId = splits[0];
 	    // I am checking for the foreign key constraint here	
             if (paperId != null && !paperId.equals("")) {
-              paperURLsCSV.println(paperURLsContent);
+              Long paperIdLong = Long.parseLong(splits[0]);
+
+              if (paperIdSet == null ||
+                  (paperIdSet != null && paperIdSet.contains(paperIdLong))) {
+                 paperURLsCSV.println(paperURLsContent);
+              }
+            } 
+          } else if (splits.length > 3) {
+            String paperURLsContent = splits[0] + "~" + 
+                               	      splits[1] + "~" + 
+            		              "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+            		              "\"" + splits[3] + "\"" + "~" +
+            		              "\"" + "\"";
+            String paperId = splits[0];
+	    // I am checking for the foreign key constraint here	
+            if (paperId == null && !paperId.equals("")) {
+              Long paperIdLong = Long.parseLong(splits[0]);
+
+              if (paperIdSet == null || 
+                  (paperIdSet != null && paperIdSet.contains(paperIdLong))) {
+                 paperURLsCSV.println(paperURLsContent);
+              }
+            } 
+          } else if (splits.length > 2) {
+            String paperURLsContent = splits[0] + "~" + 
+                               	      splits[1] + "~" + 
+            		              "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
+            		              "\"" + "\"" + "~" +
+            		              "\"" + "\"";
+            String paperId = splits[0];
+	    // I am checking for the foreign key constraint here	
+            if (paperId != null && !paperId.equals("")) {
+              Long paperIdLong = Long.parseLong(splits[0]);
+
+              if (paperIdSet == null ||
+                  (paperIdSet != null && paperIdSet.contains(paperIdLong))) {
+                 paperURLsCSV.println(paperURLsContent);
+              }
             } 
           }
         }
@@ -647,6 +689,8 @@ final public class OpenAlexFormatParser extends MAGFormatParser {
     
     // This is a function which parses the Paper Table in Microsoft Academic Graph Schema
     private void parsePapersFile(String path, PrintWriter papersCSV) {
+      paperIdSet = new HashSet<Long>(INITIAL_PAPER_ID_HASH_SIZE);
+
       try {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         // Skip header
@@ -654,6 +698,7 @@ final public class OpenAlexFormatParser extends MAGFormatParser {
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
           if (splits.length != 0 && splits.length > 32) {
+              Long paperIdLong = Long.parseLong(splits[0]);
               String paperContentString = splits[0] + "~" +
             		  	          splits[1] + "~" +
                                           "\"" + removeSpecialCharacters(splits[2]) + "\"" + "~" +
@@ -663,7 +708,7 @@ final public class OpenAlexFormatParser extends MAGFormatParser {
                                           "\"" + removeSpecialCharacters(splits[7]) + "\"" + "~" +
                                           "\"" + removeSpecialCharacters(splits[8]) + "\"" + "~" +
                                           splits[9] + "~" +
-                                          "\"" + splits[10] + "\"" + "~" +
+                                          formatDateString(splits[10]) + "~" +
                                           "\"" + removeSpecialCharacters(splits[12]) + "\"" + "~" +
                                           splits[13] + "~" +
                                           splits[14] + "~" +
@@ -679,7 +724,10 @@ final public class OpenAlexFormatParser extends MAGFormatParser {
               		                  "\"" + removeSpecialCharacters(splits[27]) + "\"" + "~" +
               		                  "\"" + removeSpecialCharacters(splits[31]) + "\"" + "~" +
                                           "\"" + splits[32] + "\"";
-              papersCSV.println(paperContentString);
+
+              if (paperIdSet.add(paperIdLong)) {
+                 papersCSV.println(paperContentString);
+              }
           }
         }
         papersCSV.flush();

@@ -29,6 +29,7 @@ abstract public class MAGFormatParser {
     protected String sourceDir = null;
     protected String targetDir = null;
     protected String csvPrefix = null;
+    protected HashSet<Long> paperIdSet = null;
     protected String affiliationsCSVName = null;
     protected String authorsCSVName = null;
     protected String conferenceInstancesCSVName = null;
@@ -49,6 +50,7 @@ abstract public class MAGFormatParser {
     protected String relatedFieldOfStudyCSVName = null;
     protected static final AtomicLong counter = new AtomicLong(0);
     protected static final AtomicLong LAST_TIME_MS = new AtomicLong();
+    protected static final int INITIAL_PAPER_ID_HASH_SIZE = 100000;
 
     public MAGFormatParser(String sourceDir, String targetDir,
        String csvPrefix)
@@ -153,6 +155,18 @@ abstract public class MAGFormatParser {
       } else {
         return false;
       }
+    }
+
+    final protected String formatDateString(String dateString) {
+      String newString = null;
+
+      if (dateString.isEmpty()) {
+         newString = dateString;
+      } else {
+         newString = "\"" + dateString + "\"";
+      }
+
+      return newString;
     }
 }
 
