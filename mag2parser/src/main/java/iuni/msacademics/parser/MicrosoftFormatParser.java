@@ -460,7 +460,7 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
         BufferedReader br = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8);
         for (String line; (line = br.readLine()) != null;) {
           String[] splits = line.split("\t");
-          if (splits.length != 0 && splits.length > 2) {
+          if (splits.length > 2) {
             String paperFOSContent = splits[0] + "~" +
                                      splits[1] + "~" + 
                                      splits[2];
@@ -470,6 +470,16 @@ final public class MicrosoftFormatParser extends MAGFormatParser {
             if (paperId != null && !paperId.equals("") && fieldsOfStudyId != null && !fieldsOfStudyId.equals("")) {
               paperFieldsOfStudyCSV.println(paperFOSContent);
             } 
+          } else if (splits.length > 1) {
+            String paperFOSContent = splits[0] + "~" +
+                                     splits[1] + "~";
+            String paperId = splits[0];
+            String fieldsOfStudyId = splits[1];
+	    // I am checking for the foreign key constraint here	
+            if (paperId != null && !paperId.equals("") && fieldsOfStudyId != null && !fieldsOfStudyId.equals("")) {
+              paperFieldsOfStudyCSV.println(paperFOSContent);
+            } 
+
           }
         }
         paperFieldsOfStudyCSV.flush();
